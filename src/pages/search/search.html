@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons start left>
+      <button ion-button icon-only (click)="goHome()">
+        <ion-icon name="md-arrow-back" color="pure-white"></ion-icon>
+      </button>
+    </ion-buttons>
+    <div class="searchBar-container">
+      <ion-searchbar #searchBar
+          (click)="dim = true"
+          (ionBlur)="dim = false"
+          [(ngModel)]="searchInput"
+          animated="true"
+          (search)="onSearch()"
+          placeholder="Search for Apps">
+      </ion-searchbar>
+    </div>
+  </ion-navbar>  
+</ion-header>
+
+<ion-content class="bg">
+  <div class="dim" *ngIf="dim"></div>
+  <div class='container center full-height' padding>
+    <ion-row>
+      <ion-col col-10 col-sm class="mright-5">
+        <span class="flex-v" *ngIf="duplicateSearchInput.trim() != '' && !isSearching">Search results:&nbsp;
+          <span class="bold">
+            <span *ngIf="apps?.length == 0">No apps found. </span>
+            <span *ngIf="apps?.length == 1">1 app found.</span>
+            <span *ngIf="apps?.length > 1">{{apps?.length+' apps found'}}.</span>
+            <span *ngIf="users?.length == 0">No users found</span>
+            <span *ngIf="users?.length == 1">1 user found</span>
+            <span *ngIf="users?.length > 1">{{users?.length+' users found'}}</span>
+          </span>
+          <!--<button *ngIf="!isSearching && apps?.length != 0" ion-button small class="mleft-5" (click)="apps = []; duplicateSearchInput = ''">Clear</button>-->
+        </span>
+      </ion-col>
+      <ion-col no-padding col-auto class="mleft-5">
+        <div class="algolia"></div>
+      </ion-col>
+    </ion-row>
+
+    <!--USERS-->
+    <!--<ion-scroll scrollX="true" class="users-results-container" *ngIf="users && users?.length != 0 && !isSearching">
+      <div *ngFor="let user of users">
+        <div class="display-grid">
+          <img [src]="user?.photoURL || 'assets/images/user-placeholder.png'" alt="" class="user-photo">
+          <span class="size-14">{{user?.name}}</span>
+        </div>
+      </div>
+    </ion-scroll>   -->
+
+    <ion-scroll scrollX class="users-results-container" *ngIf="users && users?.length != 0 && !isSearching">
+      <div *ngFor="let user of users" class="scroll-item" tappable (click)="navigateToUser(user.user_uid)" padding-right>
+        <div class="display-grid">
+          <img [src]="user?.photoURL || 'assets/images/user-placeholder.png'" alt="" class="user-photo center">
+          <span class="bold size-14">{{user?.name}}</span>
+        </div>
+      </div>
+    </ion-scroll>
+
+    <!--APPS-->
+    <masonry *ngIf="apps && apps?.length != 0 && !isSearching;">
+      <masonry-brick class="brick" *ngFor="let app of (apps | sort:'datePublished':'desc');let i=index">
+        <app-card [app]="app"></app-card>
+      </masonry-brick>
+    </masonry>
+
+    <div class="full-height flex-hv" style="margin-top: -5px;" *ngIf="duplicateSearchInput != '' && isSearching && cacheService.isConnected">
+      <div class="loader"></div>
+    </div>
+    <div class="full-height flex-hv" style="margin-top: -5px;" *ngIf="duplicateSearchInput != '' && apps && apps?.length ==0 && users && users?.length == 0 && !isSearching">
+      <div text-center>
+        <ion-icon name="md-search" class="large-icon"></ion-icon>
+        <p class="size-16">No applications and users found.</p>
+      </div>
+    </div>
+    <div class="full-height flex-hv" style="margin-top: -5px;" *ngIf="!cacheService.isConnected && isSearching">
+      <div text-center>
+        <ion-icon name="alert" color="warning" class="large-icon"></ion-icon>
+        <p class="size-16">Check your connection. Cannot search while offline.</p>
+        <button ion-button (click)="onSearch()">Retry</button>
+      </div>
+    </div>
+    <div class="full-height flex-hv" style="margin-top: -5px;" *ngIf="duplicateSearchInput == '' && cacheService.isConnected">
+      <div text-center>
+        <ion-icon name="search" class="large-icon"></ion-icon>
+        <p class="size-16">Search for apps, developers, or by keywords.</p>
+        <button ion-button (click)="focusSearch()">Search</button>
+      </div>
+    </div>
+
+
+  </div>
+</ion-content>

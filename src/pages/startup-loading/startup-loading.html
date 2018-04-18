@@ -1,0 +1,19 @@
+<ion-content class="bg">
+  <div class="full-height flex-hv" *ngIf="!isMaintenance">
+    <div class="grid-center" *ngIf="connectionError">
+      <ion-icon name="close" class="large-icon"></ion-icon>
+      <span>Please check your internet connection.</span>
+      <button ion-button class="half-width center mtop-5" (click)="retry()">Retry</button>
+    </div>
+    <div class="grid-center" *ngIf="!connectionError">
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <div class="full-height flex-hv" *ngIf="isMaintenance">
+    <div class="grid-center">
+      <ion-icon name="md-sad" class="large-icon"></ion-icon>
+      <span class="bold size-20">System is in maintenance mode.</span>
+    </div>
+  </div>
+</ion-content>

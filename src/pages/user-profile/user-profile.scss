@@ -1,0 +1,87 @@
+page-user-profile {
+    @media (max-width: 576px){
+        .container {
+            padding: 0 !important;
+
+            ion-card{
+                margin: 0 !important;
+                width: 100%;
+            }
+        }
+    }
+
+    .user-header{
+        background: url("../assets/images/user-profile-bg.png") no-repeat center center;
+        background-color: #039BE5;
+        background-size: cover;
+        height: 150px;
+    }
+
+    .user-photo-container{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 150px;
+    }
+    .user-photo-placeholder{
+        width: 155px;
+        height: 155px;
+        border-radius: 155px;
+        background-color: white;
+        padding: 3px;
+
+    }
+    .shimmer{
+        border-radius: 155px;
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: userPhotoShimmer;
+        animation-timing-function: linear;
+        background: #f6f7f8;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+        width: 155px;
+        height: 155px;
+        min-width: 155px;
+        min-height: 155px;
+        position: relative;
+        overflow: hidden;
+    }
+    @keyframes userPhotoShimmer{
+        0%{
+            background-position: -150px 0
+        }
+        100%{
+            background-position: 150px 0
+        }
+    }
+    .user-photo{
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
+        margin: 0 !important;
+    }
+
+
+    .user-body{
+        min-height: 200px;
+        background-color: #fff;
+    }
+    .user-name{
+        padding-top: 84px;
+    }
+    .bio{
+        color: #212121;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    .online{
+        margin-left: 10px;
+        margin-top: 10px;
+        width: 10px;
+        height: 10px;
+        background-color: #32db64;
+        border-radius: 100px;
+    }
+}

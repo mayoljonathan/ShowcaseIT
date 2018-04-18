@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons start left>
+      <button ion-button icon-only (click)="goHome()">
+        <ion-icon name="md-arrow-back" color="pure-white"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>{{setFilterTitle()}}</ion-title>
+  </ion-navbar>  
+</ion-header>
+
+<ion-content class="bg">
+  <div class="container center full-height">
+    <div class="full-height flex-hv" *ngIf="pageLoaded && apps && apps?.length == 0">
+      <div class="grid-center" >
+        <ion-icon name="md-apps" class="large-icon"></ion-icon>
+        <span class="size-18">There are no apps yet in the selected filter.</span>
+      </div>
+    </div>
+    <div class="full-height flex-hv" *ngIf="!pageLoaded">
+      <div class="grid-center">
+        <div class="loader"></div>
+      </div>
+    </div>
+    
+    <masonry *ngIf="pageLoaded && apps && apps?.length != 0">
+      <masonry-brick class="brick" *ngFor="let app of (apps | sort:'datePublished':'desc');let i=index">
+        <app-card [app]="app"></app-card>
+      </masonry-brick>
+    </masonry>
+  </div>
+</ion-content>

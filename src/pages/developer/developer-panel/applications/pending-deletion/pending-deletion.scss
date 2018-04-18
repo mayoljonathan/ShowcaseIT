@@ -1,0 +1,61 @@
+page-pending-deletion {
+    .app-icon{
+        width: 45px;
+        height: 45px;
+        max-width: 45px;
+    }
+
+    @keyframes placeHolderShimmer{
+        0%{
+            background-position: -45px 0
+        }
+        100%{
+            background-position: 45px 0
+        }
+    }
+    .pending-app-icon-placeholder {
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: placeHolderShimmer;
+        animation-timing-function: linear;
+        background: #f6f7f8;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+        min-height: 45px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .app-row:hover,
+    .app-row:active{
+        background-color: #F1F1F1;
+    }
+
+    .app-name-container{
+        display: flex;
+        align-items: center;
+        // display: inline-block;
+        // width: 200px;
+        // max-width: 200px;
+    }
+    .app-title{
+        margin-left: 10px;
+        max-height: 60px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+    th, td {
+		padding: .5em 1em;
+	}
+    th tr:not(:first-child),
+    tbody tr{
+        border-bottom: 1px solid #EAEAEE;
+    }
+
+}

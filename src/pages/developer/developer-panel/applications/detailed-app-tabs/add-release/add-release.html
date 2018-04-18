@@ -1,0 +1,201 @@
+<ion-header>
+  <ion-toolbar color="dev-dark">
+    <ion-title>
+			Add Release
+    </ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="pure-white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    
+  <ion-row padding>
+    <span class="mbot-5">For further releases, ensure the same package name of your uploaded apk and an incremented version name (e.g. 1.0.0 to 1.0.1).</span>
+  </ion-row>
+  <ion-row padding-left padding-right>
+    <span>App's package name: <span class="bold">{{appPackageName}}</span></span>
+  </ion-row>
+  <ion-row padding-left padding-right padding-bottom>
+    <span>Latest version name: <span class="bold">{{appVersionName}}</span></span>
+  </ion-row>
+  <ion-item class="file-dropbox-custom-ion-item">
+    <!--<file-dropbox *ngIf="!app.platforms.android.releases[androidReleaseNumber]?.demoDownloadURL" #dropboxAPK class="file-dropbox-component" [fileSizeLimit]="apkSizeLimit" fileDropType="apk" (dragFileAccepted)="uploadFile('apk',$event.file)" [dontAcceptHover]="[app.platforms.android.releases[androidReleaseNumber]?.isUploading , app.platforms.android.releases[androidReleaseNumber]?.errorParsingApk]" [class.file-dropbox-hovered]="dropboxAPK.isHovering">-->
+    <file-dropbox *ngIf="!hasUploadedPreview" #dropboxAPK class="file-dropbox-component" [fileSizeLimit]="apkSizeLimit" fileDropType="apk" (dragFileAccepted)="uploadFile($event.file)" [dontAcceptHover]="[app.platforms.android.releases[androidReleaseNumber]?.isUploading , app.platforms.android.releases[androidReleaseNumber]?.errorParsingApk]" [class.file-dropbox-hovered]="dropboxAPK.isHovering">
+      <div class="file-dropbox-container" text-center *ngIf="!app.platforms.android.releases[androidReleaseNumber]?.isUploading">
+        <div class="display-inherit" *ngIf="!errorParseApk && !app.platforms.android.releases[androidReleaseNumber]?.uploadingError">
+          <div>
+            <span text-center text-wrap>Drop the APK file here or select a file.</span>
+          </div>
+          <div>
+            <label class="custom-browse-upload" tappable>Browse
+              <input #apkUpload hidden type="file" accept=".apk" (change)="onCustomUploadChange($event,apkSizeLimit)" />
+            </label>
+          </div>
+        </div>
+
+        <!--ERROR IN PARSING-->
+        <div class="display-inherit" *ngIf="errorParseApk && !app.platforms.android.releases[androidReleaseNumber]?.uploadingError">
+          <div text-center>
+            <ion-icon name="md-close" class="size-36"></ion-icon>
+          </div>
+          <div text-center>
+            <span>&nbsp; {{errorParseMsg}}</span>
+          </div>
+          <div text-center>
+            <button ion-button (click)="errorParseApk = false">Retry</button>
+          </div>
+        </div>
+
+        <!--ERROR IN UPLOAD-->
+        <div class="display-inherit" *ngIf="app.platforms.android.releases[androidReleaseNumber]?.uploadingError">
+          <div text-center>
+            <ion-icon name="md-close" class="size-36"></ion-icon>
+          </div>
+          <div text-center>
+            <span>&nbsp; Error in uploading the apk.</span>
+          </div>
+          <div text-center>
+            <button ion-button (click)="app.platforms.android.releases[androidReleaseNumber].uploadingError = false">Retry</button>
+          </div>
+        </div>
+      </div>
+
+      <!--IF UPLOADING RELEASE-->
+      <ion-grid *ngIf="app.platforms.android.releases[androidReleaseNumber]?.isUploading">
+        <ion-row text-center>
+          <ion-col class="nowrap size-14">
+            Uploading <span class="bold">{{app.platforms.android.releases[androidReleaseNumber]?.demoFilename}}</span>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="center" col-12 col-sm-12 col-md-8 col-lg-6>
+            <progress-bar [progress]="app.platforms.android.releases[androidReleaseNumber]?.progress" [hasPaused]="app.platforms.android.releases[androidReleaseNumber]?.paused"></progress-bar>
+          </ion-col>
+        </ion-row>
+        <ion-row class="center">
+          <ion-col text-wrap class="v-center size-14 mright-5">
+            {{ !app.platforms.android.releases[androidReleaseNumber]?.bytesTransferred ? 0 : app.platforms.android.releases[androidReleaseNumber]?.bytesTransferred | fileSize}} of {{app.platforms.android.releases[androidReleaseNumber]?.demoFileSize | fileSize}}
+          </ion-col>
+          <ion-col class="v-center" no-padding col-auto>
+            <button *ngIf="!app.platforms.android.releases[androidReleaseNumber]?.paused" ion-button icon-only clear small (click)="changeUploadState('pause',app.platforms.android.releases[androidReleaseNumber].demoFilename)">
+              <ion-icon name="md-pause"></ion-icon>
+            </button>
+            <button *ngIf="app.platforms.android.releases[androidReleaseNumber]?.paused" ion-button icon-only clear small (click)="changeUploadState('resume',app.platforms.android.releases[androidReleaseNumber].demoFilename)">
+              <ion-icon name="md-play"></ion-icon>
+            </button>
+          </ion-col>
+          
+          <ion-col class="v-center" no-padding col-auto>
+            <button ion-button icon-only clear small (click)="changeUploadState('cancel',app.platforms.android.releases[androidReleaseNumber].demoFilename)">
+              <ion-icon name="md-close"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+    </file-dropbox>
+
+    <!--IF APP EXIST-->
+    <div *ngIf="app.platforms.android.releases[androidReleaseNumber]?.demoDownloadURL && hasUploadedPreview" class="demo-android-container scroll" text-center>
+      <!--Loading state-->
+      <div class="v-center full-height" *ngIf="!appPreview?.packageName">
+          <ion-spinner></ion-spinner>
+          <span>&nbsp; Extracting apk from server</span>
+      </div>
+
+      <!--DONE STATE AND APP SHOWING-->
+      <div class="demo-app" *ngIf="appPreview?.packageName">
+        <div class="demo-app-icon-container">
+          <ion-col class="v-center pad-10">
+            <ion-icon name="logo-android" color="android" class="demo-app-icon"></ion-icon>
+          </ion-col>
+        </div>
+        <div class="demo-app-details-container pad-10">
+          <ion-row class="padTB-8">
+            <ion-col class="flex-vertical-center" text-left no-padding>
+              <span class="bold">{{appPreview?.packageName}}</span>
+            </ion-col>
+          </ion-row>
+          <div class='separator-gray mtop-10 mbot-10'></div>
+          <ion-row>
+            <p text-left class="width-100">Version code :</p>
+            <p>{{appPreview?.versionCode}}</p>
+          </ion-row>
+          <ion-row>
+            <p text-left class="width-100">Version name :</p>
+            <p>{{appPreview?.versionName}}</p>
+          </ion-row>
+          <ion-row>
+            <p text-left class="width-100">Apk Size :</p>
+            <p>{{appPreview?.demoFileSize | fileSize}}</p>
+          </ion-row>
+
+          <ion-row>
+            <button ion-button (click)="clearAppPreview()">Change Apk</button>
+          </ion-row>
+        </div>
+      </div>
+    </div>
+
+  </ion-item>
+  
+  <div *ngIf="appPreview">
+    <ion-row padding-left>
+      <ion-col col-auto>
+        <ion-icon [name]="validAppPackageName ? 'md-checkmark-circle' : 'md-close-circle'" [color]="validAppPackageName? 'android' : 'danger' "></ion-icon>
+      </ion-col>
+      <ion-col class="flex-vertical-center" text-left>Package name:</ion-col>
+    </ion-row>
+    <div class="mleft-50 size-14 flex-vertical-center"> 
+      <span class="bold secondary" [class.secondary]="validAppPackageName" [class.danger]="!validAppPackageName">{{appPreview?.packageName}}</span>
+    </div>
+    <div class="mleft-50 size-14 display-flex mtop-5" *ngIf="!validAppPackageName">
+      <span class='danger error-msg'>Package name must be the same in your old apk.</span>
+    </div>
+
+    <ion-row padding-left>
+      <ion-col col-auto>
+        <ion-icon [name]="validAppVersionName ? 'md-checkmark-circle' : 'md-close-circle'" [color]="validAppVersionName? 'android' : 'danger' "></ion-icon>
+      </ion-col>
+      <ion-col class="flex-vertical-center" text-left>Version name:</ion-col>
+    </ion-row>
+    <div class="mleft-50 size-14 flex-vertical-center"> 
+      {{appVersionName}} <ion-icon name="md-arrow-round-forward" class="mleft-5 mright-5"></ion-icon> <span class="bold" [class.secondary]="validAppVersionName" [class.danger]="!validAppVersionName">{{appPreview?.versionName}}</span>
+    </div>
+    <div class="mleft-50 size-14 display-flex mtop-5" *ngIf="!validAppVersionName">
+      <span class='danger error-msg'>Version name must be incremented.</span>
+    </div>
+
+    <div *ngIf="validAppPackageName && validAppVersionName">
+      <ion-item>
+        <ion-label text-uppercase class="bold">Release Notes</ion-label>
+      </ion-item>
+      <ion-row padding-left>
+        <span>Write your updates so that users know what has been added and changed.</span>
+      </ion-row>
+
+      <ion-row padding-left>
+        <ion-item no-padding style="padding-right: 18px">
+          <ion-label floating>What's new in this release?</ion-label>
+          <ion-textarea rows="4" [(ngModel)]="appPreview.releaseNotes" class="size-14" maxlength="2000"></ion-textarea>
+        </ion-item>
+        <div class="display-block full-width" float-right>
+          <p ion-text class='push-right' style="padding-right: 18px;"> {{appPreview.releaseNotes ? appPreview.releaseNotes?.length : 0}}/2000</p>
+        </div>
+      </ion-row>
+    </div>
+
+    <ion-row padding float-right>
+      <button ion-button [disabled]="!validAppPackageName || !validAppVersionName" (click)="confirmRelease()">Confirm Release</button>
+    </ion-row>
+
+  </div>
+
+
+
+
+</ion-content>

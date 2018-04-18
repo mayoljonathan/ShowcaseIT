@@ -1,0 +1,12 @@
+fullscreen-content {
+    .header {
+        will-change: transform;
+        transition: transform 200ms linear;
+    }
+    .header--visible {
+        transform: translateY(0%);
+    }
+    .header--hidden {
+        transform: translateY(-100%);
+    }
+}

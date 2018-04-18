@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Report a Problem</ion-title>
+  </ion-navbar>  
+</ion-header>
+
+<ion-content class="bg">
+  <div class="container center page-container">
+		<ion-card style="margin-top:0px">
+
+      <div padding>
+        <p>You will be contacted in your email address provided below.</p>
+        <ion-item no-padding>
+          <ion-label stacked>Email address</ion-label>
+          <ion-input [(ngModel)]="email" ></ion-input>
+        </ion-item>
+        <ion-item no-padding>
+          <ion-label stacked>State your problem</ion-label>
+          <ion-textarea rows="10" [(ngModel)]="problem" placeholder="Explain to us what happened and what steps we can take to recreate the problem" maxlength="3000"></ion-textarea>
+        </ion-item>
+        <div class="flex-v flex-between">
+          <p ion-text float-right> {{problem ? problem?.length : 0}}/3000</p>
+          <button ion-button (click)="submitProblem()">Submit</button>
+        </div>
+
+      </div>
+
+		</ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,40 @@
+page-search {
+    .searchBar-container{
+        width: 50%;
+        margin: 0 auto;
+    }
+    @media (max-width: 568px){
+        .searchBar-container {
+            width: auto;
+        }
+    }
+    .searchbar-md .searchbar-input {
+        padding: 6px 50px !important;
+    }
+
+    // Override appcard
+    .app-title-column{
+        margin-top: 5px;
+    }
+
+    .users-results-container{
+        height: 120px;
+    }
+    .user-photo{
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
+        max-width: 60px;
+        max-height: 60px;
+        border-radius: 100px;
+        padding: 2px;
+        background-color: #dedede;
+    }
+    ion-scroll[scrollX] {
+        white-space: nowrap;
+        .scroll-item {
+            display: inline-block;
+        }
+    }
+}

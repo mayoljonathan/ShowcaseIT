@@ -1,0 +1,326 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title *ngIf="!appNotAvailable">{{app?.title}}</ion-title>
+    <ion-title *ngIf="appNotAvailable">App Not Available</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf="!pageLoaded" class="bg">
+  <div class="full-height flex-hv">
+    <div class="grid-center" *ngIf="errorLoad">
+      <ion-icon name="close" class="large-icon"></ion-icon>
+      <span>Please check your internet connection.</span>
+      <button ion-button class="half-width center mtop-5" (click)="retry()">Retry</button>
+    </div>
+    <div class="grid-center" *ngIf="!errorLoad">
+      <div class="loader"></div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-content *ngIf="pageLoaded && !errorLoad" class="bg">
+  <div class="full-height flex-hv" *ngIf="appNotAvailable">
+    <div class="grid-center">
+      <ion-icon md-name="not_interested" class="large-icon"></ion-icon>
+      <span>Sorry, the app cannot be found or is not available.</span>
+    </div>
+  </div>
+
+  <!--<div class="video-container">
+    <img src="https://img.youtube.com/vi/5PP65DL-VRU/0.jpg" alt="" class="video-thumbnail" height="250" width="100%">
+  </div>-->
+  <div *ngIf="app?.status=='unpublished'" class="readOnly flex-hv">
+    <span class="bold white">This app is unpublished and only you can view it.</span>
+  </div>
+
+  <div padding class="container center" *ngIf="pageLoaded && !appNotAvailable" style="padding-top:0">
+    <ion-card style="margin-top:0">
+      <!--BASIC-->
+      <div class="header-container">
+        <!--[style.background-image]="'url('+app?.screenshots[0]['low_res']+')'" -->
+        <div *ngIf="app?.screenshots" class="header-background" [style.opacity]="0.5"></div>
+      </div>
+      <div class="header-image app-icon-placeholder" #appIconPlaceHolder>
+        <img [src]="app.thumbIconURL || app.iconURL" alt="" (load)="loadedAppIcon()" class="app-icon" tappable [imageViewer]="app.iconURL">
+      </div>
+
+      <!--HEADER TITLE-->
+      <div text-center>
+        <h2 class="app-title bold flex-hv">
+          <div [style]="!isOwnApp ? 'padding-left:32px':''">{{app.title}}</div>
+          <div padding-left *ngIf="!isOwnApp && cacheService.isLoggedIn">
+            <button no-padding small ion-button outline clear (click)="toggleFavorite()" style="padding:1px"> 
+              <ion-icon [name]="isFavorited ? 'ios-heart': 'ios-heart-outline'" [color]="isFavorited ? 'danger' : ''" class="size-28"></ion-icon>
+            </button>
+          </div>
+          <!--<ion-icon class="mleft-5" name="ios-star-outline" tappable style="vertical-align: bottom;" (click)="toggleFavorite()"></ion-icon>-->
+        </h2>
+        <div class="pad-10">{{app.short_description}}</div>
+        
+        <div class="flex-h">
+          <div class="platform-container flex-hv" title="Source code available" *ngIf="app?.openSource && (app?.openSource?.sourceCodeDownloadURL || app?.openSource?.sourceCodeURL)">
+            <ion-icon name="md-code-download" class="size-36" color="primary"></ion-icon>
+          </div>
+          <div class="platform-container flex-hv" title="Web compatible" *ngIf="app?.platforms && app?.platforms?.web?.isCompatible">
+            <ion-icon name="md-globe" class="size-36"></ion-icon>
+          </div>
+          <div class="platform-container flex-hv" title="Android compatible" *ngIf="app?.platforms && app?.platforms?.android?.isCompatible">
+            <ion-icon name="logo-android" color="android" class="size-36"></ion-icon>
+          </div>
+          <div class="platform-container flex-hv" title="Desktop compatible" *ngIf="app?.platforms && app?.platforms?.desktop?.isCompatible">
+            <ion-icon name="md-desktop" class="size-36"></ion-icon>
+          </div>
+        </div>
+
+        <!--<div class="flex-h">
+          <div class="flex-item">
+            <ion-chip tappable (click)="scrollTo('os')" *ngIf="app?.openSource && (app?.openSource?.sourceCodeDownloadURL || app?.openSource?.sourceCodeURL)">
+              <ion-icon class="size-24" name="md-code-download"></ion-icon>
+              <ion-label>Open Source</ion-label>
+            </ion-chip>
+            <ion-chip tappable (click)="scrollTo('web')" *ngIf="app?.platforms?.web?.demoURL">
+              <ion-icon class="size-24" name="md-eye"></ion-icon>
+              <ion-label>Web App Previewable</ion-label>
+            </ion-chip>
+            <ion-chip tappable (click)="scrollTo('android')" *ngIf="app?.platforms?.android?.demoURL || app?.platforms?.android?.releases?.length>0">
+              <ion-icon class="size-24" name="md-download"></ion-icon>
+              <ion-label>Android App Downloadable</ion-label>
+            </ion-chip>
+            <ion-chip tappable (click)="scrollTo('desktop')" *ngIf="app?.platforms?.desktop?.demoURL || app?.platforms?.desktop?.demoDownloadURL ">
+              <ion-icon class="size-24" name="md-download"></ion-icon>
+              <ion-label>Desktop App Downloadable</ion-label>
+            </ion-chip>
+          </div>
+        </div>-->
+
+        <div margin-top *ngIf="downloadAvailable">
+          <button ion-button (click)="showDownloadModal()">Download</button>
+        </div>
+        <div margin-top *ngIf="app?.platforms?.web.demoURL">
+          <h3>Try {{app?.title}} in your browser</h3>
+          <span class="bold link" text-wrap tappable (click)="launchURL(app?.platforms?.web.demoURL)">{{app?.platforms?.web.demoURL}}</span>
+        </div>
+
+        <!--<ion-row padding *ngIf="app?.platforms?.web.demoURL">
+        <div text-center class="full-width">
+          <h3>Try {{app?.title}} in your browser:</h3>
+          <span class="bold link" text-wrap tappable (click)="launchURL(app?.platforms?.web.demoURL)">{{app?.platforms?.web.demoURL}}</span>
+        </div>
+      </ion-row>-->
+
+        <ion-row class="mtop-5 stats-social" no-padding>
+          <ion-col padding-left padding-right class="flex" col-auto>
+            <div class="stats-container"> 
+              <div class="stats-count">
+                <h3>{{appStats?.totalViews || '0'}}</h3>
+                <span>VIEWS</span>
+              </div>
+            </div>
+            <div class="stats-container" *ngIf="downloadAvailable">
+              <div class="stats-count no-border">
+                <h3>{{appStats.totalDownloads || '0'}}</h3>
+                <span>DOWNLOADS</span>
+              </div>
+            </div>
+            <!--<div class="stats-container">
+              <button ion-button outline clear icon-right (click)="toggleFavorite()" *ngIf="cacheService.isLoggedIn"> 
+                <ion-icon [name]="isFavorited ? 'ios-heart': 'ios-heart-outline'" class="mright-5"></ion-icon>Add to Favorite
+              </button>
+            </div>-->
+          </ion-col>
+          <ion-col col-auto>
+            <div class="share-container">
+              <div class="share-count">
+                  <h3>{{totalShare | nFormatter}}</h3>
+                  <span>SHARES</span>
+              </div>
+              <share-buttons class="withCount" [url]="'https://showcase-it.firebaseapp.com/#/app/'+app.uid" 
+                  [title]="app.title"
+                  [description]="app.short_description"
+                  [image]="app.iconURL"
+                  [tumblr]="false" [reddit]="false" [stumbleUpOn]="false"
+                  [showCount]="true" (count)="sumCounts($event)"></share-buttons>
+            </div>
+          </ion-col>
+        </ion-row>
+
+
+        <div class="separator mtop-10"></div>
+        <ion-row class="scroll">
+          <ion-col class="flex-v" margin-left text-left no-padding>
+            <span class="bold">{{app?.type == 'apps' ? 'Applications' : 'Games'}}</span> <span class="primary to">&gt;</span>
+            <span class="bold">{{app?.category_name}}</span> <span class="primary to">&gt;</span>
+            <span class="bold">{{app?.title}}</span>
+          </ion-col>
+
+          <ion-col class="center developer-button" padding-right no-padding col-auto (click)="navigateToUser(app.user_uid)">
+            <div class="flex-hv">
+              <img [src]="app?.userPhotoURL" alt="" class="owner-img">
+              <span class="owner-name bold">{{app?.userName}}</span>
+            </div>
+          </ion-col>
+        </ion-row>
+        <div class="separator"></div>
+        
+      </div>
+
+      <!--SCREENSHOTS-->
+      <div class="ss-parent-container">
+        <div *ngFor="let s of app.screenshots;let i=index" [id]="'shimmer-'+i" class="screenshot-placeholder shimmer mright-5">
+          <img [src]="s?.low_res" alt="" class="screenshot" (load)="onScreenshotLoaded(i)" tappable [imageViewer]="s?.high_res">
+        </div>
+      </div>
+
+      <!--ANDROID RELEASE NOTES-->
+      <div padding class="bg-info full-width pos-relative" *ngIf="latestAndroidApp?.versionName && latestAndroidApp?.releaseNotes">
+        <div class="android-only">
+          <ion-icon name="logo-android" color="android" class="large-icon"></ion-icon>
+        </div>
+        <div class="bold size-15 mbot-10" padding-right>What's new on v{{latestAndroidApp?.versionName}}? </div>
+        <p class="pre-line" padding-right>{{latestAndroidApp?.releaseNotes}}</p>
+      </div>
+
+      <!--FULL DESCRIPTION-->
+      <div padding>
+        <p class="pre-line" [innerHtml]="app?.full_description | linkify"></p>
+      </div>
+
+      <div class="separator"></div>
+
+      <!--MY REVIEW-->
+      <div padding *ngIf="myReview?.user_uid == cacheService.user_uid">
+        <div class="my-review-header">
+          <span class="bold size-16">My Review</span>
+          <ion-buttons end>
+            <button ion-button icon-only clear (click)="showWriteReviewModal(true)">
+              <ion-icon name="md-create"></ion-icon>
+            </button>
+            <button ion-button icon-only clear (click)="presentRemoveReview()">
+              <ion-icon name="md-trash"></ion-icon>
+            </button>
+          </ion-buttons>
+        </div>
+        <ion-row>
+          <ion-col col-auto>
+            <div class="flex-v">
+              <div class="user-photo-placeholder mtop-5"  id="user-photo-placeholder-1">
+                <img [src]="myReview?.userPhotoURL" alt="" (load)="loadedUserPhoto(1)" class="user-photo" (click)="navigateToUser(myReview?.user_uid)" tappable>
+              </div>
+              <div>
+                <div class="flex-v">
+                  <span class="mleft-10 owner-name bold" (click)="navigateToUser(myReview?.user_uid)" tappable>{{myReview?.userName}}</span>
+                  <star [rating]="myReview?.stars" [size]="'small'" [readOnly]="true" [labelText]="''" [hoverEnabled]="false" style='margin-top:3px'></star>
+                </div>
+                <span class="mleft-10 size-12">{{myReview?.dateReviewed | toFullDateAndTime}}</span>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col style="min-width: 250px">
+            <div class="mtop-5 pre-line">{{myReview?.comment}}</div>
+          </ion-col>
+        </ion-row>
+        <!--Dev reply-->
+        <div class="arrow-up developer-reply-arrow" *ngIf="myReview?.reply"></div>
+        <div class="flex-v pad-10 developer-reply" *ngIf="myReview?.reply">
+          <div class="user-photo-placeholder mtop-5"  [id]="'user-photo-placeholder-'+myReview?.reply.$key">
+            <img [src]="myReview?.reply.userPhotoURL" alt="" (load)="loadedUserPhoto(myReview?.reply.$key)" class="user-photo" (click)="navigateToUser(myReview?.reply.user_uid)" tappable>
+          </div>
+          <div>
+            <div class="flex-v">
+              <span class="mleft-10 owner-name bold" (click)="navigateToUser(myReview?.reply?.user_uid)" tappable>{{myReview?.reply?.userName}}</span>
+            </div>
+            <span class="mleft-10 size-12">{{myReview?.reply?.dateReplied | toFullDateAndTime}}</span>
+          </div>
+        </div>
+        <div class="developer-reply pad-10 mbot-10" *ngIf="myReview?.reply">
+          <span class="pre-line review-comment" [innerHtml]="myReview?.reply?.comment | linkify"></span>
+        </div>
+      </div>
+
+      <!--RATINGS-->
+      <div padding>
+        <span class="bold size-16">User Ratings</span>
+        <ion-row *ngIf="appStats?.totalReviews!=0">
+          <ion-col class="center all-ratings" text-center padding col-auto>
+            <div>
+              <star [readOnly]="true" [size]="'large'" [hoverEnabled]="false" [rating]="appStats?.averageStarRating" [labelText]="appStats?.averageStarRating"></star>
+            </div>
+            <div>
+              <ion-icon name="md-contacts"></ion-icon> {{appStats?.totalReviews}}
+            </div>
+          </ion-col>
+
+          <ion-col padding style="min-width: 200px;">
+            <div *ngFor="let star of stars" class="flex-v"><span class="mright-5">{{star}}</span> <ion-icon name="md-star" color="primary"></ion-icon>
+              <div class="bar" [id]="'bar-'+star" [style.width]="((appStats?.stars[star]/appStats?.totalReviews)*100)+'%'"></div>
+              <div class="star-counter-text" text-right>{{appStats.stars[star]}}</div>
+            </div>
+          </ion-col>
+
+        </ion-row>
+
+        <div class="flex-hv reviews-container" *ngIf="appStats?.totalReviews == 0">
+          <span>No data available yet</span>
+        </div>
+      </div>
+
+      <!--REVIEWS-->
+      <div padding>
+        <div class="reviews-header">
+          <span class="bold size-16">User Reviews <ion-badge color="primary">{{appStats?.reviews?.length}}</ion-badge></span>  
+          <button small ion-button icon-left (click)="showWriteReviewModal()" *ngIf="!myReview && cacheService?.user_uid != app?.user_uid"> 
+            <ion-icon name="ios-create-outline" class="size-24" color="pure-white"></ion-icon>Write a Review</button>
+        </div>
+        <div class="flex-hv reviews-container" *ngIf="appStats?.reviews && appStats?.reviews?.length == 0">
+          <span>No reviews yet for this app</span>
+        </div>
+
+        <masonry class='mtop-5' [options]="{gutter:5}" *ngIf="appStats?.reviews && appStats?.reviews?.length != 0">
+          <!--[class.isYourReview]='review?.user_uid === cacheService.user_uid' -->
+          <masonry-brick class="review-brick" *ngFor="let review of (appStats?.reviews | sort:'dateReviewed':'desc' | slice:0:6)">
+            <review [review]="review" [app]="app" [clampText]="true"></review>
+             <!--[showReplyField]="true"-->
+          </masonry-brick>
+        </masonry>
+
+        <div class="flex-h" *ngIf="appStats?.reviews && appStats?.reviews?.length != 0">
+          <button clear ion-button (click)="showReviewList()">See all reviews</button>
+        </div>
+      </div>
+
+      <!--INFORMATION-->
+      <div class="separator"></div>
+      <div padding class="information-container">
+        <div class="bold size-16" margin-bottom>Information</div>
+        <ion-row *ngIf="app?.website || app?.email">
+          <ion-col no-padding class="padTB-5" *ngIf="app?.website">
+            <div>Website</div>
+            <span class="link bold" (click)="launchURL(app?.website)">{{app?.website}}</span>
+          </ion-col>
+
+          <ion-col no-padding class="padTB-5" *ngIf="app?.email">
+            <div>Email</div>
+            <span class="link bold" (click)="launchEmail(app?.email)">{{app?.email}}</span>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col col-sm-6 col-12 col-md-6 col-lg-6 no-padding margin-top>
+            <div>Developed by:</div>
+            <div class="flex-v developer-button" (click)="navigateToUser(app.user_uid)">
+              <img [src]="app?.userPhotoURL" alt="" class="owner-img">
+              <span class="owner-name bold">{{app?.userName}}</span>
+            </div>
+          </ion-col>
+
+          <ion-col col-sm-12 col-12 col-md-6 col-lg-6 no-padding margin-top>
+            <div>{{app?.dateUpdated ? 'Date Updated' : 'Date Published'}}</div>
+            <div margin-top class="bold">{{app?.dateUpdated ? (app?.dateUpdated | toFullDateAndTime) : (app?.datePublished | toFullDateAndTime)}}</div>
+          </ion-col>
+        </ion-row>
+      </div>
+
+    </ion-card>
+  </div>
+
+</ion-content>

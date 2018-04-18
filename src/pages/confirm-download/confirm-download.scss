@@ -1,0 +1,19 @@
+page-confirm-download {
+    .app-row:hover,
+    .app-row:active{
+        background-color: #F1F1F1;
+    }
+    th, td {
+		padding: .5em 1em;
+	}
+    th tr:not(:first-child),
+    tbody tr{
+        border-bottom: 1px solid #EAEAEE;
+    }
+
+    .version-container{
+        border: 1px solid #dedede;
+    }
+
+
+}

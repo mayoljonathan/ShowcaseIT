@@ -1,0 +1,224 @@
+page-app-details {
+    textarea[name=shortDescription]{
+        resize: none !important;
+    }
+
+    textarea[name=fullDescription]{
+        resize: vertical;
+        max-height: 300px;
+    }
+
+    .sd-help{
+        float: left;
+        bottom: 50px;
+        left: 138px;
+    }
+    
+    .icon-image{
+        width: 200px;
+        height: 200px;
+    }
+
+    .icon-placeholder{
+        position: relative;
+        background: #DCDCDB;
+        z-index: 1;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .icon-placeholder:hover{
+        background-color: #D0D0CE;
+    }
+
+    .custom-file-upload {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 2px;
+        font-size: 1.4rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        color: #fff;
+        background-color: #488aff;
+        -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+        -webkit-transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .custom-file-upload:hover {
+        background-color: #2F79F9;
+    }
+    .disabled-custom-file-upload{
+        background-color: #D6D7D7;
+        color: #A6A7A7;
+    }
+    .disabled-custom-file-upload:hover{
+        background-color: #C9CACA;
+    }
+
+
+
+    .scroll-content {
+        padding: 0 !important;   
+    }
+    .ss-parent-container{
+        width: 100%;
+        // height: 341px;
+        height: 324px;
+        max-height: 324px;
+        // padding: 10;
+        // overflow: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        
+        .screenshot-remove-container{
+            // text-align: right;
+            // position: relative;
+
+            float: right;
+            position: relative;
+            top: -299px;
+
+            // text-align: right;
+            // position: absolute;
+            // width: 300px;
+            // top: 0;
+            // z-index: -1;
+        }
+        
+        .remove-button{
+            // top: -299px;
+            margin: 3px;
+            background-color: white;
+            border-radius: 100px;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity .2s ease-out;
+            -moz-transition: opacity .2s ease-out;
+            -webkit-transition: opacity .2s ease-out;
+            -o-transition: opacity .2s ease-out;
+        }
+        .remove-button:hover{
+            background-color: transparent;
+        }
+    }
+
+    .screenshot-container{
+        width: 300px;
+        height: 300px;
+        background-color: #DCDCDB;
+        display: inline-block;
+        border: 1px solid gray;
+    }
+
+    .screenshot-container:hover{
+        background-color: #D0D0CE;
+
+        .screenshot-remove-container{
+            z-index: 1;
+        }
+
+        .remove-button{
+            opacity: 1;
+        }
+    }
+
+    .screenshot-message-container{
+        display: table; 
+        height: 100%;
+        width: 100%;
+    }
+
+    .screenshot-message{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    .screenshot{
+        max-width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .icon-uploader{
+        position: relative;
+        height: 200px;
+        width: 200px;
+    }
+
+    .icon-placeholder:hover ~ .icon-container .remove-button,
+    .icon-uploader:hover ~ .icon-container .remove-button{ 
+        opacity:1;
+    }
+
+    // .icon-uploader:hover ~ .icon-change-container .icon-change-text-container{
+    //     opacity: 1;
+    // }
+
+    .icon-container{
+        // display:inline-block;
+        position:relative;
+        // position:absolute;
+        .remove-button{
+            margin: 3px;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            background-color: white;
+            border-radius: 100px;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity .2s ease-out;
+            -moz-transition: opacity .2s ease-out;
+            -webkit-transition: opacity .2s ease-out;
+            -o-transition: opacity .2s ease-out;
+        }
+        .remove-button:hover{
+            opacity: 1;
+            background-color: transparent !important;
+        }
+    }
+
+    .overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        // background-color: #008CBA;
+        // background-color: #626268;
+        background-color: #607D8B;
+        overflow: hidden;
+        width: 100%;
+        height: 0;
+        transition: .2s ease;
+    }
+    .overlay-text {
+        white-space: nowrap; 
+        color: white;
+        position: absolute;
+        overflow: hidden;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+    }
+    .icon-uploader:hover .overlay{ 
+        height: 20%;
+    }
+
+    .icon-uploader:hover .icon-image{
+        opacity: 0.8;
+        transition: 0.2s ease;
+    }
+
+}

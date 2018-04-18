@@ -1,0 +1,170 @@
+<ion-content class="bg">
+
+  <div class='container center'>
+    <ion-card>
+      <ion-card-content>
+        <!--<form #form="ngForm" (ngSubmit)="submitAppData(form)" novalidate>-->
+            
+          <ion-list padding-bottom>
+            <!--App Details-->
+            <ion-item>
+              <ion-label text-right text-wrap class="size-13 block">Fields marked with <span class="primary">*</span> are required in publishing</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label text-uppercase class="bold">App Details</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label class="width-135">Title <span class="primary">&nbsp;*</span></ion-label>
+              <ion-input type="text" [disabled]="app?.status==='pending_publication' || app?.status_cu==='pending_update'" [(ngModel)]="app.title" name="title" #title="ngModel" required maxlength="50"></ion-input>
+            </ion-item>
+            <p ion-text class='push-right'> {{app.title ? app.title?.length : 0}}/50</p>
+            <!--<p ion-text [hidden]="title.valid || form.submitted === false" text-left padding-left color="danger"> Title is required</p>-->
+
+            <ion-item>
+              <ion-label class="width-135">Short description <span class="primary">&nbsp;*</span></ion-label>
+              <ion-textarea rows="2" [disabled]="app?.status==='pending_publication' || app?.status_cu==='pending_update'" [(ngModel)]="app.short_description" name="shortDescription" #shortDescription="ngModel" required maxlength="80"></ion-textarea>
+            </ion-item>
+            <!--Removed for error in production-->
+            <!--<button class="sd-help" ion-button type="button" icon-only clear small tooltip="Provide useful keywords about your app. This helps your app to be indexed in the search engine." positionV="top" arrow>
+              <ion-icon name="md-help-circle"></ion-icon>
+            </button>-->
+            <p ion-text class='push-right'> {{app.short_description ? app.short_description?.length : 0}}/80</p>
+            <!--<p ion-text [hidden]="shortDescription.valid || form.submitted === false" text-left class="mleft-15 absolute" color="danger"> Short description is required</p>-->
+
+            <ion-item>
+              <ion-label class="width-135">Full description <span class="primary">&nbsp;*</span></ion-label>
+              <ion-textarea rows="5" [disabled]="app?.status==='pending_publication' || app?.status_cu==='pending_update'" [(ngModel)]="app.full_description" name="fullDescription" #fullDescription="ngModel" required maxlength="3000"></ion-textarea>
+            </ion-item>
+            <p ion-text class='push-right'> {{app.full_description ? app.full_description?.length : 0}}/3000</p>
+            <!--<p ion-text [hidden]="fullDescription.valid || form.submitted === false" text-left padding-left color="danger"> Full description is required</p>-->
+
+            <!--Categorization-->
+            <ion-item>
+              <ion-label text-uppercase class="bold">Categorization</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Application Type <span class="primary">&nbsp;*</span></ion-label>
+              <ion-select [disabled]="app?.status==='pending_publication' || app?.status_cu==='pending_update'" [(ngModel)]="app.type" name="appType" interface="popover" #appType (ionChange)="onAppTypeChange(appType.value)">
+                <ion-option value="apps">Applications</ion-option>
+                <ion-option value="games">Games</ion-option>
+              </ion-select>
+            </ion-item>
+            <!--<p ion-text [hidden]="app.type || form.submitted === false" text-left padding-left color="danger"> Application type is required</p>-->
+
+            <ion-item>
+              <ion-label>Category <span class="primary">&nbsp;*</span></ion-label>
+              <ion-select [disabled]="app?.status==='pending_publication' || app?.status_cu==='pending_update' || !app.type" [(ngModel)]="app.category" name="appCategory">
+                <ion-option *ngFor="let category of categories" [value]="category.uid">{{category.name}}</ion-option>
+              </ion-select>
+            </ion-item>
+            <!--<p ion-text [hidden]="app.category || form.submitted === false" text-left padding-left color="danger">Category is required</p>-->
+
+            <!--Image Assets-->
+            <ion-item padding-top>
+              <ion-label text-uppercase class="bold">Image Assets</ion-label>
+            </ion-item>
+            <ion-item>
+              <h3 class="bold">App Icon<span class="primary">&nbsp;*</span></h3>
+            </ion-item>
+            <ion-row padding-left>
+              <label class="icon-uploader" for="icon-upload" tappable>
+                <div class="icon-placeholder" *ngIf="!appIconUploading && !app.iconURL && !app.thumbIconURL">
+                  <div>
+                    <ion-icon class="block" md-name [md-name]="appIconUploadError ? 'error':'add'"></ion-icon>
+                    <span>{{appIconUploadError ? 'Upload failed':'Add icon here'}}</span>
+                  </div>
+                </div>
+                <!--APP ICON PROGRESSBAR-->
+                <div class="icon-placeholder" *ngIf="app.iconURL && appIconUploading && !appIconUploadError">
+                  <div class="full-width">
+                    <progress-bar [progress]="appIconProgress"></progress-bar>
+                  </div>
+                </div>
+                <img *ngIf="app.iconURL && !appIconUploading && !appIconUploadError" [src]="app.thumbIconURL ? app.thumbIconURL : app.iconURL" [alt]="app.title" class="icon-image">
+                <!--OVERLAY-->
+                <div class="overlay" *ngIf="(app.iconURL && app.thumbIconURL) && app.status !== 'pending_publication' && app?.status_cu!=='pending_update'">
+                  <div class="overlay-text">{{platformUtil.isTouchDevice() ? 'Tap' : 'Click'}} to change</div>
+                </div>
+              </label>
+              <input id="icon-upload" hidden type="file" accept="image/*" #iconUpload (change)="onIconChange($event)" [disabled]="appIconUploading || app.status === 'pending_publication' || app?.status_cu==='pending_update'"/>
+
+              <!--REMOVE BUTTON-->
+              <div class="icon-container" *ngIf="((appIconUploading || app.iconURL) && appIconProgress!=100) && app.status !== 'pending_publication' && app?.status_cu!=='pending_update'">
+                <button class="remove-button" ion-button type="button" icon-only clear (click)="cancelUpload('cancel_app_icon_upload')">
+                  <ion-icon name="md-close-circle"></ion-icon>
+                </button>
+              </div>
+
+            </ion-row>
+
+            <ion-item padding-top>
+              <h3 class="bold">App Screenshots<span class="primary">&nbsp;*</span></h3>
+            </ion-item>
+            <ion-row padding-left>
+              <p>At least 3 screenshots are required. Maximum of 10 screenshots.</p>
+            </ion-row>
+
+            <ion-row padding-left>
+              <ion-scroll scrollX="true" class="ss-parent-container mbot-10" *ngIf="app.screenshots && app.screenshots.length!=0">
+                  <div *ngFor="let screenshot of app.screenshots;let i=index" class="screenshot-container mright-5" [style.background-color]="!screenshot.isUploading ? 'transparent' : null">
+                    <!--THE IMAGE-->
+                    <img *ngIf="screenshot['high_res'] && screenshot['low_res'] && !screenshot.isUploading && !screenshot.uploadingError" [src]="screenshot['low_res'] ? screenshot['low_res'] : screenshot['high_res']" class="screenshot" tappable [imageViewer]="screenshot['high_res']">
+                    
+                    <div *ngIf="screenshot.isUploading || screenshot.uploadingError" class="screenshot-message-container">
+                        <div class="screenshot-message">
+                          <!--UPLOAD FAILED-->
+                          <div *ngIf="screenshot.uploadingError">
+                            <ion-icon class="block size-36" text-center md-name="error"></ion-icon>
+                            <span>Upload failed</span>
+                            <button ion-button small class="flex" (click)="cancelUpload('cancel_app_screenshot_upload',screenshot,i)">Remove</button>
+                          </div>
+
+                          <div *ngIf="screenshot['high_res'] && screenshot.isUploading && !screenshot.uploadingError" class="full-width">
+                            <progress-bar [progress]="screenshot.progress"></progress-bar>
+                          </div>
+
+                        </div>
+                    </div>
+
+                    <!--REMOVE BUTTON-->
+                    <div class="screenshot-remove-container" *ngIf="((screenshot.isUploading || screenshot['low_res']) && screenshot.progress!=100) && app.status !== 'pending_publication' && app?.status_cu!=='pending_update'" >
+                      <button class="remove-button" ion-button type="button" icon-only clear (click)="cancelUpload('cancel_app_screenshot_upload',screenshot,i)">
+                        <ion-icon name="md-close-circle"></ion-icon>
+                      </button>
+                    </div>
+                  </div>
+              </ion-scroll>                
+                  
+              <div class="v-center">
+                <label class="custom-file-upload" margin-right tappable [class.disabled-custom-file-upload]="app.screenshots.length>=10 || app.status === 'pending_publication' || app?.status_cu==='pending_update'">
+                  Add Screenshot
+                  <input #screenshotUpload [disabled]="app.screenshots.length>=10 || app.status === 'pending_publication' || app?.status_cu==='pending_update'" hidden multiple type="file" accept="image/*" (change)="onScreenshotChange($event)" />
+                </label>
+                <p *ngIf="app.screenshots.length==1">{{app.screenshots.length}} screenshot</p>
+                <p *ngIf="app.screenshots.length>1">{{app.screenshots.length}} screenshots</p>
+              </div>
+
+            </ion-row>
+
+            <!--Contact Details-->
+            <ion-item padding-top>
+              <ion-label text-uppercase class="bold">Contact Details</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label class="width-135">Website</ion-label>
+              <ion-input [disabled]="app?.status==='pending_publication' || app?.status_cu==='pending_update'" type="text" [(ngModel)]="app.website" name="website" #website="ngModel" required></ion-input>
+            </ion-item>
+            <ion-item no-lines>
+              <ion-label class="width-135">Email Address <span class="primary">&nbsp;*</span></ion-label>
+              <ion-input [disabled]="app?.status==='pending_publication' || app?.status_cu==='pending_update'" type="text" [(ngModel)]="app.email" name="email" #email="ngModel" required></ion-input>
+            </ion-item>
+
+          </ion-list>
+
+        <!--</form>-->
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+ 
+</ion-content>

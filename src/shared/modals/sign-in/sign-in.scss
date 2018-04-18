@@ -1,0 +1,41 @@
+sign-in {
+    .header{
+        background: url("../assets/images/apps-bg.png") no-repeat center center;
+        background-color: #0288D1;
+        background-size: cover;
+        height: 150px;
+        // -webkit-filter: blur(1px);
+        // -moz-filter: blur(1px);
+        // -o-filter: blur(1px);
+        // -ms-filter: blur(1px);
+        // filter: blur(1px);
+    }
+
+    .header-title{
+        padding-top: 24px;
+    }
+
+    .header-title-text{
+        width: 100%;
+        text-align: center;
+        font-size: 36px;
+        color: #212121;
+        font-weight: bold;
+    }
+    .header-title-sub{
+        width: 100%;
+        padding-left: 40px;
+        padding-right: 40px;
+        text-align: center;
+    }
+
+    .close-button{
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .body{
+        padding-top: 36px;
+    }
+}

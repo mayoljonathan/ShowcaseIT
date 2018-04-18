@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Download {{type}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <span>Before you download <b>{{app?.title}} ({{type}})</b>, please verify you're a human.</span>
+  <div margin-top class="flex-h" style="height:78px">
+    <re-captcha (captchaResponse)="handleCorrectCaptcha($event)" (captchaExpired)="captchExpired($event)" [site_key]="site_key"></re-captcha>
+  </div>
+
+  <div text-center margin-top *ngIf="type!='Android App'">Download via:</div>
+  <div text-center margin-top *ngIf="type=='Android App' && request?.release">Download 
+    <b>{{(app?.platforms?.android.releases|objToArr)[0]?.packageName}} v{{latestAndroidApp?.versionName}}</b> via:</div>
+  <div text-center>
+    <button ion-button icon-left [disabled]='!enableDownload' (click)="launchURL(request?.externalDownloadURL)" *ngIf="request?.externalDownloadURL">
+      <ion-icon md-name="open_in_new" color="pure-white"></ion-icon> External Download
+      </button>
+    <button ion-button icon-left [disabled]='!enableDownload' (click)="downloadFile(request?.directDownloadURL,type,request?.release)" *ngIf="request?.directDownloadURL">
+      <ion-icon md-name="file_download" color="pure-white"></ion-icon> Direct Download
+    </button>
+  </div>
+  <div text-center class="mtop-5 full-width size-13" *ngIf="request?.directDownloadURL">Size: {{request?.appFileSize | fileSize}}</div>
+  <div text-center class="mtop-5 full-width size-13" *ngIf="request?.directDownloadURL">Total Downloads: {{request?.downloads || 0}}</div>
+  
+  <span class="size-16 bold" *ngIf="type=='Android App' && request?.release">Versions <ion-badge color="primary">{{(app?.platforms?.android.releases | objToArr)?.length}}</ion-badge></span>
+  <div class="full-width mtop-10" *ngIf="type=='Android App' && request?.release">
+    <div class="version-container scroll-x">
+      <table class="full-width center">
+        <thead>
+          <tr>
+            <th text-center>Version</th>
+            <th text-center>Downloads</th>
+            <th text-center>Size</th>
+            <th text-center>Uploaded on</th>
+            <th width="40"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="app-row" *ngFor="let release of (app?.platforms?.android.releases | objToArr | sort: 'dateCreated':'desc');let i=index" text-wrap no-padding tappable>
+            <td text-center (click)='viewRelease(release)'>
+              {{release.versionName}}
+            </td>
+            <td text-center (click)='viewRelease(release)'> {{appStats?.downloads?.android_releases[release.key] || 0}}</td>
+            <td text-center (click)='viewRelease(release)'> {{release.demoFileSize | fileSize}} </td>
+            <td text-center (click)='viewRelease(release)'> {{release.dateCreated ? (release.dateCreated | toFullDateAndTime) : ''}} </td>
+            <td text-center (click)="downloadFile(release.demoDownloadURL,type,release)">
+              <ion-icon name="md-download"></ion-icon>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</ion-content>

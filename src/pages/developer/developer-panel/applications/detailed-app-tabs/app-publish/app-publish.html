@@ -1,0 +1,145 @@
+<!--<ion-content class="bg">
+  <div ion-fixed class="full-width" style="height:97% !important"> 
+    <div class='container center full-height'>
+      <ion-card class="full-height">
+        <ion-card-content class="app-container full-height">
+
+          <ion-scroll scrollX="true" scrollY="true" class="full-height"> 
+            
+            
+            <div text-wrap class="publish-container">
+              <div class="v-center height-inherit">
+                <div text-center>
+                  <ion-icon name="md-checkmark-circle-outline" class="large-icon" color="android"></ion-icon>
+                  <h2 class="bold">Your app is ready for publishing!</h2>
+                  <button ion-button (click)="togglePublish()">Publish App</button>
+                </div>
+              </div>
+            </div>
+
+          </ion-scroll>
+        </ion-card-content>
+
+      </ion-card>
+    </div>
+
+  </div>
+</ion-content>-->
+
+<ion-content class="bg">
+
+  <div class='container center'>
+    <ion-card>
+      <ion-card-content>
+            
+        <!--<div *ngIf='!releases' text-center class="webkit-height">
+              <div class="v-center height-inherit">
+                <ion-spinner name="crescent"></ion-spinner>
+              </div>
+            </div>-->
+
+        <div class="publish-container scroll p-center" *ngIf="app?.status === 'draft' || app?.status === 'pending_publication'">
+          <div class="c-center pad-15" text-center *ngIf="!appErrors?.error && app?.status !== 'pending_publication'">
+            <ion-icon name="md-checkmark-circle-outline" class="large-icon" color="android"></ion-icon>
+            <h2 class="bold">Your app is ready for publishing!</h2>
+            <div class="publish-info">
+              <!--Please read and follow our <span class="link">Application Content Guidelines.</span> -->
+              <p>Once you publish your app, it will be reviewed by the admins. Please read and follow our <a href="./app_content_guidelines/index.html" target="_blank" class="link">App Content Guidelines</a>. Misrepresentation and inappropriate content of your app may result in removal or request will be declined. You will receive an email to your email address (your social account) from the admin once reviewed.</p>
+              <p class="mtop-10">Note: You can't edit your app's content while requesting for publish.</p>
+            </div>
+            <button ion-button (click)="togglePublish('toggle_pr')">Publish App</button>
+          </div>
+
+          <div class="c-center pad-15" text-center *ngIf="appErrors?.error && app?.status !== 'pending_publication'">
+            <ion-icon name="md-alert" class="large-icon" color="warning"></ion-icon>
+            <h2 class="bold">App not ready for publishing.</h2>
+            <h4>We found {{appErrors.errors?.length == 1 ? appErrors.errors?.length+' error' : appErrors.errors?.length+' errors'}} in your app. </h4>
+            <div class="publish-errors">
+              <div class="separator mtop-10 mbot-10"></div>
+              <ion-row class="flex-vertical-center" *ngFor="let error of appErrors.errors">
+                <ion-col class="mleft-10 error-name" no-padding text-left style="margin-top:1px">{{error}}</ion-col>
+              </ion-row>
+            </div>
+          </div>
+
+          <!--WAITING FOR APPROVAL-->
+          <div class="c-center pad-15" text-center *ngIf="!appErrors?.error && app?.status === 'pending_publication'">
+            <ion-icon name="md-time" class="large-icon" color="primary"></ion-icon>
+            <h2 class="bold">Waiting for admin's approval</h2>
+            <div class="publish-info" *ngIf="app?.request_dateCreated">
+              <p>Request sent: <span class="bold">{{app?.request_dateCreated | toFullDateAndTime}}</span></p>
+            </div>
+            <button ion-button (click)="togglePublish('toggle_pr')">Cancel Publish Request</button>
+          </div>
+        </div>
+
+        <div *ngIf="app?.status === 'published' || app?.status === 'unpublished' || app?.status_cu === 'pending_update'">
+
+          <div class="pad-15" text-center>
+            <ion-icon md-name="system_update_alt" class="large-icon" color="android"></ion-icon>
+            <h2 class="bold">Content update</h2>
+            <div class="publish-info" *ngIf="app?.status_cu !== 'pending_update'">
+              <p>Send a request for content update in your app. After you send a request, it will still be reviewed by the admins. Please read and follow our <a href="./app_content_guidelines/index.html" target="_blank" class="link">App Content Guidelines</a>. Misrepresentation and inappropriate content of your app may result in removal or request will be declined. You will receive an email to your email address (your social account) from the admin once reviewed.</p>
+              <p class="mtop-10">Note: You can't edit your app's content while requesting for content update.</p>
+            </div>
+            <div class="publish-info" *ngIf="app?.status_cu === 'pending_update'">
+              <p>Request sent: <span class="bold">{{app?.cu_request_dateCreated | toFullDateAndTime}}</span></p>
+            </div>
+            <div class="warning-info" *ngIf="app?.disabledByAdminUid">
+              <p>Your app has been disabled by the admin. You can't make content update request and your app is hidden in the ShowcaseIT. Please contact the <span class='link' (click)='launchEmail()'>administrator</span>.</p>
+            </div>
+            <button ion-button *ngIf="!appErrors?.error && app?.status_cu !== 'pending_update'" [disabled]="app?.disabledByAdminUid" (click)="toggleContentUpdate('request_cu')">Request for Content Update</button>
+            <button ion-button *ngIf="!appErrors?.error && app?.status_cu === 'pending_update'" [disabled]="app?.disabledByAdminUid" (click)="toggleContentUpdate('cancel_cu')">Cancel Request</button>
+
+            <div style="display: grid;">
+              <div class="c-center pad-15" text-center *ngIf="appErrors?.error">
+                <h2 class="bold size-16">App not ready for content update.</h2>
+                <h4>We found {{appErrors.errors?.length == 1 ? appErrors.errors?.length+' error' : appErrors.errors?.length+' errors'}} in your app. </h4>
+                <div class="publish-errors">
+                  <div class="separator mtop-10 mbot-10"></div>
+                  <ion-row class="flex-vertical-center" *ngFor="let error of appErrors.errors">
+                    <ion-col class="mleft-10 error-name" no-padding text-left style="margin-top:1px">{{error}}</ion-col>
+                  </ion-row>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="separator mbot-10 mtop-10"></div>
+
+          <!--APP IS PUBLISHED-->
+          <div class="publish-container scroll p-center" *ngIf="app?.status === 'published'">
+            <div class="c-center pad-15" text-center>
+              <ion-icon name="md-checkmark-circle-outline" class="large-icon" color="android"></ion-icon>
+              <h2 class="bold">Your app is published!</h2>
+              <div class="publish-info">
+                <p>Your app is currently available to all the users of the ShowcaseIT. Click unpublish to make your app not available to users.</p>
+                <p class="mtop-10">Published date: <span class="bold">{{app?.datePublished | toFullDateAndTime}} ({{app?.datePublished | timeFromNow}})</span></p>
+              </div>
+              <button ion-button color="danger" (click)="togglePublish('unpublish')">Unpublish App</button>
+              <button ion-button color="primary" (click)="navigateToApp()">View App in ShowcaseIT</button>
+            </div>
+          </div>
+
+          <!--APP IS UNPUBLISHED-->
+          <div class="publish-container scroll p-center" *ngIf="app?.status === 'unpublished'">
+            <div class="c-center pad-15" text-center>
+              <ion-icon name="md-eye-off" class="large-icon"></ion-icon>
+              <h2 class="bold">Your app is unpublished!</h2>
+              <div class="publish-info">
+                <p>Your app is currently not available to all the users of the ShowcaseIT.</p>
+                <p class="mtop-10">Published date: <span class="bold">{{app?.datePublished | toFullDateAndTime}} ({{app?.datePublished | timeFromNow}})</span></p>
+              </div>
+              <button ion-button color="primary" (click)="togglePublish('publish')">Publish App</button>
+              <button ion-button color="primary" (click)="navigateToApp()">View App in ShowcaseIT</button>
+            </div>
+          </div>
+        </div>
+
+
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+ 
+</ion-content>

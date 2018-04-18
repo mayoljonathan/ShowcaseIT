@@ -1,0 +1,178 @@
+<ion-header>
+  <ion-toolbar [color]="!readOnly ? 'dev-dark': 'primary'">
+    <ion-title *ngIf="!readOnly">
+			{{app.platforms.android.releases[0]?.releaseName ? app.platforms.android.releases[0]?.releaseName : 'Release '+app.platforms.android.releases[0]?.versionName}}
+    </ion-title>
+    <ion-title *ngIf="readOnly">
+			Version {{app.platforms.android.releases[0]?.versionName}}
+    </ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="pure-white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--{{app.platforms.releases[0].versionName}}-->
+  <!--<ion-slides>-->
+    <!--<ion-slide *ngFor="let release of app.platforms.android.releases;let i=index">-->
+       <!--class="full-height"-->
+    <!--<ion-scroll scrollY="true">-->
+
+      <!--class="full-height" -->
+      <ion-grid *ngFor="let release of app.platforms.android.releases;let i=index" padding>
+        <ion-row>
+          <ion-col no-padding class="flex-vertical-center">
+            <div text-wrap class="bold size-16">{{release?.packageName}}</div>
+          </ion-col>
+          <ion-col col-auto no-padding *ngIf="!readOnly">
+            <button ion-button icon-only clear (click)="downloadApk(release?.demoDownloadURL)">
+              <ion-icon name="md-download"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+        
+        <div class='separator-gray mtop-10 mbot-10'></div>
+
+        <!--VERSIONS-->
+        <ion-row>
+          <ion-col>
+            <ion-row>
+              <span class="size-14">Version code</span>
+            </ion-row>
+            <ion-row>
+              <span class="bold size-16">{{release?.versionCode}}</span>
+            </ion-row>
+          </ion-col>
+
+          <ion-col>
+            <ion-row>
+              <span class="size-14">Version name</span>
+            </ion-row>
+            <ion-row>
+              <span class="bold size-16">{{release?.versionName}}</span>
+            </ion-row>
+          </ion-col>
+
+          <ion-col>
+            <ion-row>
+              <span class="size-14">Apk size</span>
+            </ion-row>
+            <ion-row>
+              <span class="bold size-16">{{release?.demoFileSize | fileSize}}</span>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+
+        <div *ngIf="release?.supportsScreens" class='separator-gray mtop-10 mbot-10'></div>
+
+        <!--SUPPORT SCREENS-->
+        <ion-row *ngIf="release?.supportsScreens" (click)="supportsScreenExpand()">
+          <ion-col text-left class="middle width-190">
+            <span class="size-14">Supported screens</span>
+          </ion-col>
+          <ion-col class="middle">
+            <span *ngIf="supportScreensLength > 0" class="bold size-14">{{supportScreensLength == 1 ? supportScreensLength+' screen supported' : supportScreensLength+' screens supported'}}</span>
+            <ion-icon float-right [name]="screenExpanded ? 'md-arrow-dropup' : 'md-arrow-dropdown'"></ion-icon>
+            
+            <ion-row *ngFor="let screen of supportsScreens">
+              <div class="size-14 full-width expanded capitalize" *ngIf="screenExpanded" text-left text-wrap>{{screen.key}}
+                <span float-right>
+                  <ion-icon [name]="screen.value ? 'md-checkmark-circle' : 'md-close-circle'" [color]="screen.value ? 'android' : 'danger' "></ion-icon>
+                </span>
+              </div>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+
+        <div class='separator-gray mtop-10 mbot-10'></div>
+
+        <!--PERMISSIONS-->
+        <ion-row (click)="permissionExpanded = !permissionExpanded">
+          <ion-col text-left class="middle width-190">
+            <span class="size-14">App permissions</span>
+          </ion-col>
+          <ion-col class="middle">
+            <span *ngIf="!release?.usesPermissions || release?.usesPermissions?.length == 0" class="bold size-14">No permissions required</span>
+            <span *ngIf="release?.usesPermissions && release?.usesPermissions?.length > 0" class="bold size-14">{{release?.usesPermissions?.length == 1 ? release?.usesPermissions?.length+' permission' : release.usesPermissions?.length+' permissions'}}</span>
+            <ion-icon *ngIf="release?.usesPermissions && release?.usesPermissions?.length > 0" float-right [name]="permissionExpanded ? 'md-arrow-dropup' : 'md-arrow-dropdown'"></ion-icon>
+            
+            <ion-row *ngFor="let permission of release?.usesPermissions">
+              <div class="size-14 full-width expanded" *ngIf="permissionExpanded" text-left text-wrap>{{permission.name}}</div>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+
+        <div class='separator-gray mtop-10 mbot-10'></div>
+        
+        <!--SDK-->
+        <ion-row>
+          <ion-col text-left class="width-190">
+            <span class="size-14">SDK</span>
+          </ion-col>
+          <ion-col>
+            <ion-row>
+              <ion-col no-padding>
+                <div *ngIf="release?.usesSdk.minSdkVersion">Minimum SDK version</div>
+                <div *ngIf="release?.usesSdk.minSdkVersion" class="bold">{{release?.usesSdk.minSdkVersion}}</div>
+              </ion-col>
+
+              <ion-col no-padding>
+                <div *ngIf="release?.usesSdk.targetSdkVersion">Target SDK version</div>
+                <div *ngIf="release?.usesSdk.targetSdkVersion" class="bold">{{release?.usesSdk.targetSdkVersion}}</div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+
+        <div class='separator-gray mtop-10 mbot-10'></div>
+
+        <!--UPLOADED-->
+        <ion-row>
+          <ion-col text-left class="width-190">
+            <span class="size-14">Uploaded on</span>
+          </ion-col>
+          <ion-col>
+            <div class="size-14 bold">{{release?.dateCreated | toFullDateAndTime}}</div>
+          </ion-col>
+        </ion-row>
+
+        <div class='separator-gray mtop-10 mbot-10'></div>
+        
+        <!--RELEASE NOTES-->
+        <ion-row *ngIf="!readOnly">
+          <ion-col text-left class="width-190">
+            <span class="size-14">Release notes</span>
+          </ion-col>
+          <ion-col>
+            <div *ngIf="!isEditingRN" class="size-14 bold release-notes">{{release?.releaseNotes && release?.releaseNotes.trim().length!=0 ? release?.releaseNotes : 'None'}}</div>
+            <ion-item *ngIf="isEditingRN" no-padding>
+              <ion-label floating>What's new in this release?</ion-label>
+              <ion-textarea rows="4" [(ngModel)]="clonedReleaseNotes" class="size-14" maxlength="2000"></ion-textarea>
+            </ion-item>
+            <div class="display-block" float-right>
+              <p *ngIf="isEditingRN" ion-text class='push-right'> {{clonedReleaseNotes ? clonedReleaseNotes?.length : 0}}/2000</p>
+            </div>
+
+            <ion-buttons end *ngIf="app.status !== 'pending_publication' && app?.status_cu !== 'pending_update'">
+              <button ion-button (click)="toggleReleaseNotes()" float-right>{{isEditingRN ? 'Update' : 'Edit'}}</button>
+              <button *ngIf="isEditingRN" ion-button (click)="isEditingRN = false" float-right>Cancel</button>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
+
+        <!--FOR READ ONLY-->
+        <div padding class="bg-info full-width pos-relative" *ngIf="readOnly && release?.releaseNotes && release?.releaseNotes.trim().length !=0">
+          <div class="bold size-15 mbot-10" padding-right>What's new on this version? </div>
+          <p class="pre-line" padding-right>{{release?.releaseNotes.trim()}}</p>
+        </div>
+
+      </ion-grid>
+
+    <!--</ion-slide>-->
+  <!--</ion-slides>-->
+
+    <!--</ion-scroll>-->
+</ion-content>

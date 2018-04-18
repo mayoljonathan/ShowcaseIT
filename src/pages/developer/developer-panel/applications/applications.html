@@ -1,0 +1,138 @@
+<ion-header>
+  <ion-navbar color="dev-dark">
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu" color="pure-white"></ion-icon>
+    </button>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="more" color="pure-white"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>All Applications</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+    <!--<ngx-datatable class="material"
+      scrollbarH="true"
+      [rows]="rows"
+      [columns]="columns">
+    </ngx-datatable>-->
+
+
+
+
+
+
+
+    <!--Android-->
+    <!--<ion-fab top right edge>
+      <button ion-fab mini (click)='showCreateAppModal()'><ion-icon md-name="add"></ion-icon></button>
+    </ion-fab>-->
+    <!--Web-->
+    <!--<ion-fab bottom right>
+      <button ion-fab (click)='showCreateAppModal()' color="dev-dark"><ion-icon md-name="add"></ion-icon></button>
+    </ion-fab>-->
+
+<ion-content class="bg">
+  <div ion-fixed class="full-width" style="height:97% !important"> 
+    <div class='container center full-height'>
+      <ion-card class="full-height">
+        <ion-card-content class="app-container full-height">
+
+          <ion-row class="separator">
+            <ion-col class="flex-vertical-center">
+              <ion-item>
+                <ion-icon name="md-search" item-start></ion-icon>
+                <ion-input #searchBarInput placeholder="Search app" clearInput></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col col-auto class="center">
+              <button ion-button float-right (click)='showCreateAppModal()'>Add Application</button>
+            </ion-col>
+          </ion-row>
+
+          <ion-scroll scrollX="true" scrollY="true" class="full-height"> 
+            <div *ngIf='!apps' text-center class="webkit-height">
+              <div class="v-center height-inherit">
+                <div class="loader"></div>
+              </div>
+            </div>
+
+            <div text-wrap *ngIf="apps?.length==0" class="apps-empty-container">
+              <div class="v-center height-inherit">
+                <div text-center>
+                  <ion-icon md-name="format_list_bulleted" class="large-icon"></ion-icon>
+                  <!--<img src="../assets/icon/icon-placeholder.png" alt="icon" class="apps-empty center" tappable (click)="showCreateAppModal()">-->
+                  <h2 class="size-18 bold">You have no applications</h2>
+                  <h4>Start creating your application now.</h4>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="apps && apps?.length!=0">
+              <table class="full-width center table">
+                <thead>
+                  <tr *ngIf="(apps | filter: searchBarInput.value:'title')?.length !== 0">
+                    <th text-uppercase text-left>App Name</th>
+                    <th text-uppercase width="120">Platforms</th>
+                    <th text-uppercase width="80">Avg. Rating</th>
+                    <th text-uppercase width="100">Last Updated</th>
+                    <th text-center text-uppercase width="80">Status</th>
+                    <th text-uppercase width="40"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="app-row" *ngFor="let app of (apps | filter: searchBarInput.value:'title' | sort: 'dateUpdated':'desc');let i=index" text-wrap no-padding tappable>
+                    <td class="app-name-container" (click)='navigateToApp(app)'>
+                      <div class="app-icon-placeholder" [id]="'app-icon-placeholder-'+i">
+                        <img *ngIf="!app.thumbIconURL && !app.iconURL" src="../assets/icon/icon-placeholder.png" (load)="loadedAppIcon(i)" alt="icon" class="app-icon">
+                        <img *ngIf="app.thumbIconURL || app.iconURL" [src]="app.thumbIconURL ? app.thumbIconURL : app.iconURL" (load)="loadedAppIcon(i)" alt="icon" class="app-icon">
+                      </div>
+                      <span class="app-title">{{app.title}}</span>
+                    </td>
+                    <td text-center (click)='navigateToApp(app)'>
+                      <span *ngIf="app.platforms && !app.platforms.web?.isCompatible && !app.platforms.android?.isCompatible && !app.platforms.desktop?.isCompatible">-</span>
+                      <ion-icon *ngIf="app.platforms && app.platforms.web?.isCompatible" name="md-globe" class="mright-5"></ion-icon>
+                      <ion-icon *ngIf="app.platforms && app.platforms.android?.isCompatible" name="logo-android" color="android" class="mright-5"></ion-icon>
+                      <ion-icon *ngIf="app.platforms && app.platforms.desktop?.isCompatible" name="md-desktop"></ion-icon>
+                    </td>
+                    <td text-center (click)='navigateToApp(app)' *ngIf="app?.appStats?.averageStarRating">
+                      <div class="flex-hv">
+                        {{app?.appStats?.averageStarRating}} <ion-icon name="md-star" color="primary" class="mleft-5"></ion-icon>
+                      </div>
+                    </td>
+                    <td text-center (click)='navigateToApp(app)' *ngIf="!app?.appStats?.averageStarRating">-</td>
+                    <td text-center (click)='navigateToApp(app)'>{{app.dateUpdated ? (app.dateUpdated | toFullDateAndTime) : (app.dateCreated | toFullDateAndTime)}}</td>
+                    <td text-center text-capitalize no-margin no-padding (click)='navigateToApp(app)'>
+                      <ion-badge [color]="app?.status_cu ? statusColor(app?.status_cu) : statusColor(app?.status)">{{app?.status_cu ? statusName(app?.status_cu) : statusName(app?.status)}}</ion-badge>
+                      <ion-badge color="disabled" *ngIf="app?.disabledByAdminUid">Disabled</ion-badge>
+                    </td>
+                    <td text-center (click)="showMoreActions(app)">
+                      <ion-icon name="md-more"></ion-icon>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+              <!--IF SEARCH RESULTS EMPTY-->
+              <div class="p-center empty-results" *ngIf="(apps | filter: searchBarInput.value:'title')?.length === 0">
+                <div class="c-center">
+                  <ion-icon name="md-search" class="large-icon"></ion-icon>
+                  <p class="size-16">No applications found in your search query.</p>
+                </div>
+              </div>
+
+            </div>
+
+          </ion-scroll>
+        </ion-card-content>
+
+      </ion-card>
+    </div>
+
+  </div>
+
+</ion-content>

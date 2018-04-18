@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="dev-dark">
+    <ion-title>
+			Create Application
+    </ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="pure-white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form #form="ngForm" (ngSubmit)="submitForm(form)" novalidate>
+    <ion-grid class="middle-container">
+      <ion-row>
+        <ion-col col-12>
+          <ion-item no-padding>
+            <ion-label floating>Title *</ion-label>
+            <ion-input type="text" [(ngModel)]="app.title" name="title" #title="ngModel" [maxlength]="titleMaxLength" required></ion-input>
+          </ion-item>
+
+          <p ion-text class='push-right'> {{app.title?.length}}/{{titleMaxLength}}</p>
+          <p ion-text [hidden]="title.valid || form.submitted === false" color="danger"> Title is required </p>
+          
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-footer>
+      <ion-toolbar color="dev-dark">
+        <ion-buttons end>
+          <button ion-button type="button" (click)="dismiss()" color="pure-white">Cancel</button>
+          <button ion-button type="submit" color="pure-white">Create</button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-footer>
+
+  </form>
+</ion-content>

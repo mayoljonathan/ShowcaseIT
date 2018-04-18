@@ -1,0 +1,345 @@
+page-main-app-details {
+    @media (max-width: 576px){
+        .container {
+            padding: 0 !important;
+
+            ion-card{
+                margin: 0 !important;
+                width: 100%;
+            }
+        }
+    }
+    // .container{
+    //     padding-top: 16px !important;
+    // }
+    
+    // .video-container {
+    //     height: 250px !important;
+    // }
+    // .video-thumbnail{
+    //     object-fit: cover;
+    // }
+    // CUSTOM
+    .header-container{
+        width: 240%;
+        height: 350px;
+        background-color: rgba(1, 125, 249, 0.61);
+        -webkit-transform: rotate(6deg) translate(-50%, -50%);
+        transform: rotate(6deg) translate(-50%, -50%);
+        overflow: hidden;
+    }
+    .header-background{
+        background: url("../assets/images/apps-bg.png");
+        height: inherit;
+        border: 1px solid cadetblue;
+    }
+    .header-image{
+        z-index: 99;
+        height: 150px;
+        width: 150px;
+        margin: auto;
+        margin-top: -300px;
+        position: relative;
+        margin-bottom: 16px;
+    }
+    // END CUSTOM
+    .platform-container{
+        width: 50px;
+        height: 50px;
+        border-radius: 100px;
+        background-color: #dedede;
+        margin: 5px;
+    }
+    .to{
+        font-weight: bold;
+        font-size: 24px;
+        margin-bottom: 2px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    .app-icon{
+        width: 150px;
+        height: 150px;
+        border-radius: 5px;
+        // border: 1px solid #dedede;
+    }
+    .app-title{
+        font-size: 20px;
+    }
+    
+    @keyframes placeHolderShimmer{
+        0%{
+            background-position: -150px 0
+        }
+        100%{
+            background-position: 150px 0
+        }
+    }
+    .app-icon-placeholder {
+        border-radius: 5px;
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: placeHolderShimmer;
+        animation-timing-function: linear;
+        background: #f6f7f8;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+        width: 150px;
+        height: 150px;
+        min-width: 150px;
+        min-height: 150px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .owner-img{
+        border-radius: 100px;
+        width: 40px;
+        height: 40px;
+        margin: 10px;
+        border: 1px solid #dedede;
+    }
+    .owner-name{
+        max-height: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        // display: -webkit-box;
+        // -webkit-line-clamp: 3;
+        // -webkit-box-orient: vertical;
+    }
+
+    .flex-item:not(:first-child){
+        margin-top: 4px;
+    }
+
+    .ss-parent-container{
+        width: 100%;
+        // height: 300px;
+        // max-height: 300px;
+        display: -webkit-box;
+        flex-wrap: nowrap;
+        overflow: auto;
+        // overflow-y: hidden;
+        // white-space: wrap;
+    }
+    .screenshot-placeholder{
+        display: flex;
+        align-items: center;
+        width: 300px;
+        height: 300px;
+        max-height: 300px;
+    }
+    .screenshot{
+        // height: 300px;
+        height: 300px;
+        max-height: 300px;
+        min-height: 300px;
+        width: 300px;
+        object-fit: cover;
+        // padding: 1px;
+    }
+    .shimmer{
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: placeHolderShimmerSS;
+        animation-timing-function: linear;
+        background: #f6f7f8;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    }
+    @keyframes placeHolderShimmerSS{
+        0%{
+            background-position: -300px 0
+        }
+        100%{
+            background-position: 0px 0
+        }
+    }
+
+    @keyframes userPhotoShimmer{
+        0%{
+            background-position: -40px 0
+        }
+        100%{
+            background-position: 40px 0
+        }
+    }
+    .user-photo-placeholder {
+        border-radius: 100px;
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: userPhotoShimmer;
+        animation-timing-function: linear;
+        background: #f6f7f8;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+        position: relative;
+        overflow: hidden;
+    }
+    .user-photo{
+        border-radius: 100px;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+        border: 1px solid #dedede;
+    }
+    .isYourReview{
+        background-color: #f1f1f1;
+    }
+    .review-brick{
+        width: 100%;
+        padding: 6px;
+    }
+    // @media (min-width: 768px){
+    //     .review-brick {
+    //         width: 50%;
+    //     }
+    // }
+    @media (min-width: 992px){
+        .review-brick {
+            width: 33%;
+        }
+    }
+    .my-review-header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .developer-button:hover{
+        background-color: #F1F1F1;
+        cursor: pointer;
+    }
+
+    .android-only{
+        position: absolute;
+        z-index: 0;
+        /* opacity: 0.5; */
+        right: -20px;
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+        display: inline-block;
+    }
+
+    .bar{
+        margin-left: 10px;
+        background-color: #488aff;
+        height: 20px;
+    }
+
+    .all-ratings{
+        padding-left: 64px !important;
+        padding-right: 64px !important;
+    }
+
+    .star-counter-text{
+        padding-left: 5px;
+    }
+
+    .reviews-header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    // REVIEWS
+    .reviews-container{
+        min-height: 100px;
+    }
+
+    // SHARE
+    .share-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-left: 10px;
+        margin-right: 10px;
+        .share-count {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-right: 1rem;
+            margin-right: 1rem;
+            border-right: 2px solid #dedede;
+            h3 {
+                display: flex;
+                flex-direction: column-reverse;
+                font-size: 2.5rem;
+                margin: 0;
+            }
+            span {
+                font-weight: 400;
+                font-size: 11px;
+            }
+        }
+    }
+    share-buttons{
+        width: auto !important;
+    }
+    .share-button{
+        background-color: blue;
+        width: 40px;
+        height: 40px;
+    }
+
+    .stats-social{
+        justify-content: space-between;
+    }
+    @media (max-width: 1180px){
+        .stats-social {
+            justify-content: center !important;
+        }
+    }
+
+    .stats-container{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        .stats-count,{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-right: 1rem;
+            margin-right: 1rem;
+            border-right: 2px solid #dedede;
+            h3 {
+                display: flex;
+                flex-direction: column-reverse;
+                font-size: 2.5rem;
+                margin: 0;
+            }
+            span {
+                font-weight: 400;
+                font-size: 11px;
+            }
+        }
+    }
+
+    .developer-reply{
+        background-color: #dedede;
+        margin: 0 10px;
+    }
+    .developer-reply-arrow{
+        margin-left: 30px;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid #dedede;
+    }
+    .reply-container{
+        margin-top: -15px;
+    }
+    
+    .readOnly {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding-top: 56px;
+        z-index: 100;
+        text-align: center;
+        min-height: 82px;
+        background-color: #555459;
+    }
+}

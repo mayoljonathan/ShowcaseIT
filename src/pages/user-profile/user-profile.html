@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title *ngIf="user?.name && pageLoaded">{{user?.name}}</ion-title>
+    <ion-title *ngIf="!user?.name && pageLoaded">User not found</ion-title>
+    <ion-title *ngIf="!pageLoaded">User Profile</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="bg">
+  
+  <!--Conn error-->
+  <div class="full-height flex-hv" *ngIf="!pageLoaded">
+    <div class="grid-center" *ngIf="errorLoad">
+      <ion-icon name="close" class="large-icon"></ion-icon>
+      <span>Please check your internet connection.</span>
+      <button ion-button class="half-width center mtop-5" (click)="retry()">Retry</button>
+    </div>
+    <div class="grid-center" *ngIf="!errorLoad">
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <div class="full-height flex-hv" *ngIf="!user?.name && pageLoaded;else loadedUser">
+    <span>Sorry but the user cannot be found.</span>
+  </div>
+
+  <ng-template #loadedUser>
+    <div padding class="container center" style="padding-top:0" *ngIf="pageLoaded && !errorLoad">
+    <!--<ion-card style="margin-top:0">-->
+      <div class="user-header">
+        <div class="user-photo-container">
+          <div class="user-photo-placeholder shimmer" id="user-photo-placeholder">
+            <img [src]="user?.photoURL" alt="" class="user-photo" (load)="onUserPhotoLoad()" tappable imageViewer>
+          </div>
+        </div>
+      </div>
+      <div class="user-body">
+        <div padding-left padding-right text-center class="size-24 bold user-name">
+          <div class="flex-h">
+            {{user?.name}}
+            <div class="online" *ngIf="isOnline"></div>
+          </div>
+        </div>
+        <div text-center *ngIf="isDeveloper" class="size-16">
+          <ion-badge color='primary'>Developer</ion-badge>
+        </div>
+        <!--<div padding-left padding-right text-center class="size-24 bold user-name">
+          <div class="flex-h">
+            {{user?.name}}
+            <div class="online" *ngIf="isOnline"></div>
+          </div>
+        </div>
+        <div text-center *ngIf="isDeveloper" class="size-16">Developer</div>-->
+        <div *ngIf="user?.bio" padding text-center text-wrap class="bio">
+          <span class="pre-line" [innerHtml]="user?.bio | linkify"></span>
+        </div>
+      </div>
+      
+      <!--<div margin class="separator"></div>-->
+      <div padding>
+        <div class="size-18 bold" margin-bottom>Showcased Apps <ion-badge color="primary" *ngIf="apps && apps?.length > 0">{{apps?.length}}</ion-badge></div>
+        <div class="flex-hv h-50" *ngIf="apps?.length == 0 && pageLoaded">
+          <span>User haven't showcased any apps yet.</span>
+        </div>
+        <masonry *ngIf="apps && apps?.length != 0">
+          <masonry-brick class="brick" *ngFor="let app of (apps | sort:'datePublished':'desc');let i=index">
+            <app-card [app]="app" [hideDeveloperName]="true"></app-card>
+          </masonry-brick>
+        </masonry>
+      </div>
+    <!--</ion-card>-->
+    </div>
+  </ng-template>
+  
+</ion-content>

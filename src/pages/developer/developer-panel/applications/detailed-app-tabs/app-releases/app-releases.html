@@ -1,0 +1,93 @@
+<ion-content class="bg">
+  <div ion-fixed class="full-width" style="height:97% !important"> 
+    <div class='container center full-height'>
+      <ion-card class="full-height">
+        <ion-card-content class="app-container full-height">
+
+          <ion-row class="separator">
+            <ion-col class="flex-vertical-center">
+              <span text-uppercase class="bold size-16">Releases</span>
+              <!--Error in production-->
+              <!--<button class="release-help" ion-button icon-only clear small tooltip="Only android apps are supported in releasing a new version and adding release notes." positionV="top" arrow>
+                <ion-icon name="md-help-circle"></ion-icon>
+              </button>-->
+            </ion-col>
+            <ion-col col-auto class="center">
+              <button ion-button float-right [disabled]="releases?.length==0 || releases[releases.length-1]?.errorParsingApk || !releases[releases.length-1]?.packageName || !app.platforms.android?.isCompatible || app.status === 'pending_publication' || app?.status_cu === 'pending_update'" (click)="presentAddRelease()">Add Release</button>
+            </ion-col>
+          </ion-row>
+
+          <ion-scroll scrollX="true" scrollY="true" class="full-height"> 
+            <div *ngIf='!releases' text-center class="webkit-height">
+              <div class="v-center height-inherit">
+                <ion-spinner name="crescent"></ion-spinner>
+              </div>
+            </div>
+
+            <!--IF NO RELEASES-->
+            <div text-wrap *ngIf="releases?.length==0 && app.platforms.android?.isCompatible" class="apps-empty-container">
+              <div class="v-center height-inherit">
+                <div text-center>
+                  <ion-icon md-name="new_releases" class="large-icon"></ion-icon>
+                  <h2 class="bold">You have no releases yet</h2>
+                  <h4>Upload your android app in the demo section located in the distributions tab. Note: Only android apps are supported in releasing a new version and adding release notes.</h4>
+                </div>
+              </div>
+            </div>
+            
+            <!--IF THE APP IS NOT AN ANDROID PLATFORM COMPATIBLE-->
+            <div text-wrap *ngIf="!app.platforms.android?.isCompatible" class="apps-empty-container">
+              <div class="v-center height-inherit">
+                <div text-center>
+                  <ion-icon md-name="new_releases" class="large-icon"></ion-icon>
+                  <h2 class="bold">Releases is only available for android apps</h2>
+                  <h4>If your app is compatible with Android, select <ion-icon name="logo-android" color="android"></ion-icon> in the platforms section located in the distributions tab.</h4>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="releases && releases?.length!=0 && app.platforms.android?.isCompatible">
+              <table class="full-width center">
+                <thead>
+                  <tr>
+                    <th text-uppercase text-left>Release name</th>
+                    <th text-center text-uppercase>Version name</th>
+                    <th text-center text-uppercase>Version code</th>
+                    <th text-center text-uppercase>Uploaded on</th>
+                    <th text-uppercase width="40"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!--Will produce an error in add-release-->
+                  <!--|sort:'dateCreated':'desc'--> 
+                  <tr class="app-row" *ngFor="let release of releases;let i=index" text-wrap no-padding tappable>
+                    <td text-left (click)='viewRelease(release)'>
+                      <span *ngIf="!release.packageName && !release.errorParsingApk && !release.isUploading" class="primary">Parsing apk...</span>
+                      <span *ngIf="release.isUploading" class="primary">Uploading - {{release?.progress}}% complete</span>
+                      <span *ngIf="release.errorParsingApk" class="danger">Error in parsing the apk.</span>
+                      <span *ngIf="!release.errorParsingApk">{{release.releaseName ? release.releaseName : release.versionName }}</span>
+                    </td>
+                    <td text-center (click)='viewRelease(release)'>
+                      {{release.versionName}}
+                    </td>
+                    <td text-center (click)='viewRelease(release)'>
+                      {{release.versionCode}}
+                    </td>
+                    <td text-center (click)='viewRelease(release)'>{{release.dateCreated && !release.errorParsingApk ? (release.dateCreated | toFullDateAndTime) : ''}}</td>
+                    <td text-center (click)="showMoreActions(release,i)" *ngIf="release.packageName || (!release.isUploading && release.errorParsingApk)">
+                      <ion-icon name="md-more"></ion-icon>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </ion-scroll>
+        </ion-card-content>
+
+      </ion-card>
+    </div>
+
+  </div>
+
+</ion-content>

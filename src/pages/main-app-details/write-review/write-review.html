@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{!isEditing ? 'Write a Review' : 'Editing your review'}}</ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="pure-white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <div class="flex-hv">
+    <div class="user-photo-placeholder shimmer" id="user-photo-placeholder">
+      <img [src]="user?.photoURL" alt="" class="user-photo" (load)="onUserPhotoLoad()">
+    </div>
+  </div>
+  <div class="flex-hv flex-dc">
+    <p>Rate the app</p>
+    <star [rating]="review?.stars" [size]="'large'" [labelText]="''" [hoverEnabled]="true" (ratingStars)="onGetRatingStars($event)"></star>
+  </div>
+  <div class="separator-below"></div>
+
+  <ion-item no-padding class="transparent">
+    <ion-textarea [(ngModel)]="duplicateComment" rows="8" maxlength="1000" placeholder="Tell us your review to this app" clearInput></ion-textarea>
+  </ion-item>
+
+  <div class="display-block">
+    <p ion-text float-left> {{duplicateComment ? duplicateComment?.length : 0}}/1000</p>
+    <button ion-button (click)="submitReview()" float-right>{{isEditing ? 'Update' : 'Submit'}}</button>
+  </div>
+
+
+</ion-content>

@@ -1,0 +1,29 @@
+page-home {
+    // .bg{
+    //     background: url("../assets/images/bg2.png") no-repeat center center fixed;
+    //     background-size: cover;
+    // }
+
+    .tab-buttons-container{
+        background: url("../assets/images/bg2.png") no-repeat center center fixed;
+        background-size: cover;
+    }
+    .project-title{
+        position: fixed;
+        top: 0;
+        bottom: 0;
+    }
+    .searchBar-container{
+        width: 50%;
+        margin: 0 auto;
+    }
+    @media (max-width: 568px){
+        .searchBar-container {
+            float: right;
+            width: auto;
+        }
+    }
+    .searchbar-md .searchbar-input {
+        padding: 6px 50px !important;
+    }
+}

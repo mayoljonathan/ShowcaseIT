@@ -1,0 +1,6 @@
+page-my-apps-tabs {
+    // Fix for new version of chrome 
+    super-tabs-toolbar > ion-toolbar.toolbar.scroll-tabs .tab-buttons-container .tab-buttons super-tab-button {
+        flex: 0 0 auto;
+    }
+}

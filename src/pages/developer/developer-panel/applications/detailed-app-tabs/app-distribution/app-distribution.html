@@ -1,0 +1,448 @@
+<ion-content class="bg">
+
+  <div class='container center'>
+    <ion-card>
+      <ion-card-content>
+            
+          <ion-list padding-bottom>
+            <ion-item>
+              <ion-label text-right text-wrap class="size-13 block">Fields marked with <span class="primary">*</span> are required in publishing</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label text-uppercase class="bold">Platforms <span class="primary">&nbsp;*</span></ion-label>
+            </ion-item>
+            <ion-row padding-left>
+              <p>Select platforms that your app is compatible with.</p>
+            </ion-row>
+
+            <ion-row padding-left>
+              <ion-col *ngFor="let platform of platforms" class="m-all-5" no-padding tappable (click)="selectPlatform(platform)">
+                <div class="platform-container">
+                  <ion-checkbox class="platform-checkbox" [disabled]="app.platforms[platform.name]?.isUploading || app.status === 'pending_publication' || app?.status_cu==='pending_update'" (click)="selectPlatform(platform)" [checked]="app.platforms[platform.name].isCompatible"></ion-checkbox>
+                  <div class="icon-container">
+                    <ion-icon class="platform-icon" [md]="platform.icon" [color]="platform.color"></ion-icon>
+                  </div>
+                  <div class="platform-name-container">
+                    <span class="size-16 white capitalize">{{platform.name}}</span>
+                  </div>
+                </div>
+              </ion-col> 
+            </ion-row>
+
+            <!--Demo-->
+            <ion-item *ngIf="platformSelected">
+              <ion-label text-uppercase class="bold">Demo</ion-label>
+            </ion-item>
+            <ion-row padding-left *ngIf="platformSelected">
+              <p>For web app, provide its URL.</p>
+              <p>For android and desktop apps, provide download URL or upload the demo app. URL's can be from your GitHub, Google Drive and etc.</p>
+            </ion-row>
+            <!--Web-->
+            <ion-item *ngIf="app.platforms.web?.isCompatible" class="demo-section">
+              <h3 class="bold">For Web</h3>
+            </ion-item>
+            <ion-item *ngIf="app.platforms.web?.isCompatible">
+              <ion-label>Web App URL</ion-label>
+              <ion-input [disabled]="app.status === 'pending_publication' || app?.status_cu==='pending_update'" type="text" [(ngModel)]="app.platforms.web.demoURL" required></ion-input>
+            </ion-item>
+
+            <!--Android-->
+            <ion-item *ngIf="app.platforms.android?.isCompatible" class="demo-section">
+              <h3 class="bold">For Android</h3>
+            </ion-item>
+            <ion-item *ngIf="app.platforms.android?.isCompatible">
+              <ion-label>Download URL</ion-label>
+              <ion-input [disabled]="app.status === 'pending_publication' || app?.status_cu==='pending_update'" type="text" [(ngModel)]="app.platforms.android.demoURL" required></ion-input>
+            </ion-item>
+            <ion-row padding-left margin-top *ngIf="app.platforms.android?.isCompatible">
+              <p>Uploading your apk has a limit of <span class="bold">{{apkSizeLimit}}MB.</span></p>
+            </ion-row>
+
+            <!--RELEASE NUMBER-->
+            <ion-row padding-left margin-top *ngIf="app.platforms.android.releases[androidReleaseNumber]?.demoDownloadURL && app.platforms.android?.isCompatible && app.platforms.android.releases[androidReleaseNumber].packageName" class="display-inline-block">
+              <div class="display-flex">
+                <div class="width-100">
+                  Release name : 
+                </div>
+                <span class="bold">{{ app.platforms.android.releases[androidReleaseNumber].releaseName ? app.platforms.android.releases[androidReleaseNumber].releaseName : app.platforms.android.releases[androidReleaseNumber].versionName}}</span>
+                <!--<span class="bold">{{androidReleaseNumber == 0 ? app.platforms.android.releases[androidReleaseNumber].releaseName || app.platforms.android.releases[androidReleaseNumber].versionName +' (Initial release)' : app.platforms.android.releases[androidReleaseNumber].releaseName || app.platforms.android.releases[androidReleaseNumber].versionName}}</span>-->
+              </div>
+
+              <div class="display-flex">
+                <div class="width-100">
+                  Uploaded on : 
+                </div>
+                <span>
+                  <span class="bold">{{app.platforms.android.releases[androidReleaseNumber]?.dateCreated | toFullDateAndTime}}</span>
+                </span>
+              </div>
+            </ion-row>
+
+            <ion-item class="file-dropbox-custom-ion-item" *ngIf="app.platforms.android?.isCompatible">
+              <file-dropbox *ngIf="!app.platforms.android.releases[androidReleaseNumber]?.demoDownloadURL" #dropboxAPK class="file-dropbox-component" [fileSizeLimit]="apkSizeLimit" fileDropType="apk" (dragFileAccepted)="uploadFile('apk',$event.file)" [dontAcceptHover]="[app.platforms.android.releases[androidReleaseNumber]?.isUploading , app.platforms.android.releases[androidReleaseNumber]?.errorParsingApk, app.status === 'pending_publication', app?.status_cu==='pending_update']" [class.file-dropbox-hovered]="dropboxAPK.isHovering">
+                <!--IF NO DEMO APP & NOT UPLOADING-->
+                <div *ngIf="!app.platforms.android.releases[androidReleaseNumber]?.isUploading" class="file-dropbox-container" text-center>
+                  <div class="display-inherit" *ngIf="app.platforms.android.releases.length == 0 && (!app.platforms.android.releases[androidReleaseNumber]?.errorParsingApk || !app.platforms.android.releases[androidReleaseNumber]?.uploadingError)">
+                    <div>
+                      <span text-center text-wrap>{{ app.status === 'pending_publication' || app?.status_cu==='pending_update' ? 'No apk provided.' : 'Drop the apk file here or select a file.' }}</span>
+                    </div>
+                    <div *ngIf="app.status !== 'pending_publication' && app?.status_cu !== 'pending_update'">
+                      <label class="custom-browse-upload" tappable>Browse
+                        <input #apkUpload hidden type="file" accept=".apk" (change)="onCustomUploadChange($event,'apk',apkSizeLimit)" />
+                      </label>
+                    </div>
+                  </div>
+                  <!--ERROR IN PARSING-->
+                  <div class="display-inherit" *ngIf="app.platforms.android.releases[androidReleaseNumber]?.errorParsingApk">
+                    <div text-center>
+                      <ion-icon name="md-close" class="size-36"></ion-icon>
+                    </div>
+                    <div text-center>
+                      <span>&nbsp; Error in parsing the apk. File may be corrupted.</span>
+                    </div>
+                    <div text-center>
+                      <button ion-button (click)="removeParseError(app.platforms.android.releases[androidReleaseNumber].masterReleaseCode)">Retry</button>
+                    </div>
+                  </div>
+                  <!--ERROR IN UPLOAD-->
+                  <div class="display-inherit" *ngIf="app.platforms.android.releases[androidReleaseNumber]?.uploadingError">
+                    <div text-center>
+                      <ion-icon name="md-close" class="size-36"></ion-icon>
+                    </div>
+                    <div text-center>
+                      <span>&nbsp; Error in uploading the apk.</span>
+                    </div>
+                    <div text-center>
+                      <button ion-button (click)="app.platforms.android.releases[androidReleaseNumber].uploadingError = false">Retry</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!--IF UPLOADING DEMO APP-->
+                <ion-grid *ngIf="app.platforms.android.releases[androidReleaseNumber]?.isUploading">
+                  <ion-row text-center>
+                    <ion-col class="nowrap size-14">
+                      Uploading <span class="bold">{{app.platforms.android.releases[androidReleaseNumber]?.demoFilename}}</span>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="center" col-12 col-sm-12 col-md-8 col-lg-6>
+                      <progress-bar [progress]="app.platforms.android.releases[androidReleaseNumber]?.progress" [hasPaused]="app.platforms.android.releases[androidReleaseNumber]?.paused"></progress-bar>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="center">
+                    <ion-col text-wrap class="v-center size-14 mright-5">
+                      {{ !app.platforms.android.releases[androidReleaseNumber]?.bytesTransferred ? 0 : app.platforms.android.releases[androidReleaseNumber]?.bytesTransferred | fileSize}} of {{app.platforms.android.releases[androidReleaseNumber]?.demoFileSize | fileSize}}
+                    </ion-col>
+                    <ion-col class="v-center" no-padding col-auto>
+                      <button *ngIf="!app.platforms.android.releases[androidReleaseNumber]?.paused" ion-button icon-only clear small (click)="changeUploadState('apk','pause',app.platforms.android.releases[androidReleaseNumber].demoFilename)">
+                        <ion-icon name="md-pause"></ion-icon>
+                      </button>
+                      <button *ngIf="app.platforms.android.releases[androidReleaseNumber]?.paused" ion-button icon-only clear small (click)="changeUploadState('apk','resume',app.platforms.android.releases[androidReleaseNumber].demoFilename)">
+                        <ion-icon name="md-play"></ion-icon>
+                      </button>
+                    </ion-col>
+                    
+                    <ion-col class="v-center" no-padding col-auto>
+                      <button ion-button icon-only clear small (click)="changeUploadState('apk','cancel',app.platforms.android.releases[androidReleaseNumber].demoFilename)">
+                        <ion-icon name="md-close"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+
+              </file-dropbox>
+
+              <!--IF DEMO APP EXIST-->
+              <div *ngIf="app.platforms.android.releases[androidReleaseNumber]?.demoDownloadURL" class="demo-android-container scroll" text-center>
+                <!--Loading state-->
+                <div class="v-center full-height" *ngIf="!app.platforms.android.releases[androidReleaseNumber].packageName">
+                    <ion-spinner></ion-spinner>
+                    <span>&nbsp; Extracting apk from server</span>
+                </div>
+
+                <!--DONE STATE AND APP SHOWING-->
+                <div class="demo-app" *ngIf="app.platforms.android.releases[androidReleaseNumber].packageName">
+                  <div class="demo-app-icon-container">
+                    <ion-col class="v-center pad-10">
+                      <ion-icon name="logo-android" color="android" class="demo-app-icon"></ion-icon>
+                    </ion-col>
+                  </div>
+                  <div class="demo-app-details-container pad-10">
+                    <ion-row class="padTB-8">
+                      <ion-col class="flex-vertical-center" text-left no-padding>
+                        <span class="bold">{{app.platforms.android.releases[androidReleaseNumber]?.packageName}}</span>
+                      </ion-col>
+                      <!--<ion-col col-auto no-padding>
+                        <button ion-button icon-only clear small (click)="presentDeleteRelease('android',app.platforms.android.releases[androidReleaseNumber].releaseNumber)">
+                          <ion-icon name="md-close"></ion-icon>
+                        </button>
+                      </ion-col>-->
+                    </ion-row>
+                    <div class='separator-gray mtop-10 mbot-10'></div>
+                    <ion-row>
+                      <p text-left class="width-100">Version code :</p>
+                      <p>{{app.platforms.android.releases[androidReleaseNumber]?.versionCode}}</p>
+                    </ion-row>
+                    <ion-row>
+                      <p text-left class="width-100">Version name :</p>
+                      <p>{{app.platforms.android.releases[androidReleaseNumber]?.versionName}}</p>
+                    </ion-row>
+                    <ion-row>
+                      <p text-left class="width-100">Apk Size :</p>
+                      <p>{{app.platforms.android.releases[androidReleaseNumber]?.demoFileSize | fileSize}}</p>
+                    </ion-row>
+
+                    <ion-row>
+                      <button ion-button (click)="presentApkDetails()">View Details</button>
+                      <button ion-button (click)="downloadFile(app.platforms.android.releases[androidReleaseNumber].demoDownloadURL)">Download</button>
+                    </ion-row>
+                  </div>
+                </div>
+              </div>
+            </ion-item>
+
+            <!--Desktop-->
+            <ion-item *ngIf="app.platforms.desktop?.isCompatible" class="demo-section">
+              <h3 class="bold">For Desktop</h3>
+            </ion-item>
+            <ion-item *ngIf="app.platforms.desktop?.isCompatible">
+              <ion-label>Download URL</ion-label>
+              <ion-input [disabled]="app.status === 'pending_publication' || app?.status_cu==='pending_update'" type="text" [(ngModel)]="app.platforms.desktop.demoURL" required></ion-input>
+            </ion-item>
+            <ion-row padding-left margin-top *ngIf="app.platforms.desktop?.isCompatible">
+              <p>Uploading your desktop app archive has a limit of <span class="bold">{{desktopArchiveSizeLimit}}MB.</span></p>
+            </ion-row>
+            <ion-item class="file-dropbox-custom-ion-item" *ngIf="app.platforms.desktop?.isCompatible">
+              <file-dropbox *ngIf="!app.platforms.desktop?.demoDownloadURL" #dropboxArchiveDesktop class="file-dropbox-component" [fileSizeLimit]="desktopArchiveSizeLimit" fileDropType="archive_desktop" (dragFileAccepted)="uploadFile('archive_desktop',$event.file)" [dontAcceptHover]="[app.status === 'pending_publication', app?.status_cu==='pending_update']"  [class.file-dropbox-hovered]="dropboxArchiveDesktop.isHovering">
+                <!--IF NO DEMO DESKTOP APP & NOT UPLOADING-->
+                <div *ngIf="!app.platforms.desktop?.isUploading" class="file-dropbox-container" text-center>
+                  <div class="display-inherit" *ngIf="!app.platforms.desktop?.uploadingError">
+                    <div>
+                      <span text-center text-wrap>{{ app.status === 'pending_publication' || app?.status_cu==='pending_update' ? 'No file provided.' : 'Drop zip or rar file here or select a file.' }}</span>
+                    </div>
+                    <div *ngIf="app.status !== 'pending_publication' && app?.status_cu !== 'pending_update'">
+                      <label class="custom-browse-upload" tappable>Browse
+                        <input #desktopUpload hidden type="file" accept=".zip,.rar" (change)="onCustomUploadChange($event,'archive_desktop',desktopArchiveSizeLimit)" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <!--ERROR UPLOADING-->
+                  <div class="display-inherit" *ngIf="app.platforms.desktop?.uploadingError">
+                    <div text-center>
+                      <ion-icon name="md-close" class="size-36"></ion-icon>
+                    </div>
+                    <div text-center>
+                      <span>&nbsp; Error in uploading the file.</span>
+                    </div>
+                    <div text-center>
+                      <button ion-button (click)="app.platforms.desktop.uploadingError = false">Retry</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!--IF UPLOADING DEMO APP-->
+                <ion-grid *ngIf="app.platforms.desktop?.isUploading">
+                  <ion-row text-center>
+                    <ion-col class="nowrap size-14">
+                      Uploading <span class="bold">{{app.platforms.desktop?.demoFilename}}</span>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="center" col-12 col-sm-12 col-md-8 col-lg-6>
+                      <progress-bar [progress]="app.platforms.desktop?.progress" [hasPaused]="app.platforms.desktop?.paused"></progress-bar>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="center">
+                    <ion-col text-wrap class="v-center size-14 mright-5">
+                      {{ !app.platforms.desktop?.bytesTransferred ? 0 : app.platforms.desktop?.bytesTransferred | fileSize}} of {{app.platforms.desktop?.demoFileSize | fileSize}}
+                    </ion-col>
+                    <ion-col class="v-center" no-padding col-auto>
+                      <button *ngIf="!app.platforms.desktop?.paused" ion-button icon-only clear small (click)="changeUploadState('archive_desktop','pause',app.platforms.desktop.demoFilename)">
+                        <ion-icon name="md-pause"></ion-icon>
+                      </button>
+                      <button *ngIf="app.platforms.desktop?.paused" ion-button icon-only clear small (click)="changeUploadState('archive_desktop','resume',app.platforms.desktop.demoFilename)">
+                        <ion-icon name="md-play"></ion-icon>
+                      </button>
+                    </ion-col>
+                    
+                    <ion-col class="v-center" no-padding col-auto>
+                      <button ion-button icon-only clear small (click)="changeUploadState('archive_desktop','cancel',app.platforms.desktop.demoFilename)">
+                        <ion-icon name="md-close"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+
+              </file-dropbox>
+
+              <!--IF DEMO APP EXIST-->
+              <div *ngIf="app.platforms.desktop?.demoDownloadURL" class="demo-container scroll" text-center>
+                <!--DONE STATE AND DESKTOP APP SHOWING-->
+                <div class="demo-app">
+                  <div class="demo-app-icon-container">
+                    <ion-col class="v-center pad-10">
+                      <ion-icon name="md-filing" color="primary" class="demo-app-icon"></ion-icon>
+                    </ion-col>
+                  </div>
+                  <div class="demo-app-details-container pad-10">
+                    <ion-row>
+                      <ion-col class="flex-vertical-center" text-left no-padding>
+                        <span class="bold">{{app.platforms.desktop?.demoFilename}}</span>
+                      </ion-col>
+                      <ion-col col-auto no-padding *ngIf="app.status !== 'pending_publication' && app?.status_cu !== 'pending_update'">
+                        <button ion-button icon-only clear small (click)="presentDeleteRelease('desktop')">
+                          <ion-icon name="md-close"></ion-icon>
+                        </button>
+                      </ion-col>
+                    </ion-row>
+                    <div class='separator-gray mtop-10 mbot-10'></div>
+                    <ion-row>
+                      <p text-left class="width-100">File size :</p>
+                      <p>{{app.platforms.desktop?.demoFileSize | fileSize}}</p>
+                    </ion-row>
+                    <ion-row>
+                      <p text-left class="width-100">Uploaded on :</p>
+                      <p>{{app.platforms.desktop?.dateCreated ? (app.platforms.desktop?.dateCreated | toFullDateAndTime) : ''}}</p>
+                    </ion-row>
+
+                    <ion-row>
+                      <button ion-button (click)="downloadFile(app.platforms.desktop.demoDownloadURL)">Download</button>
+                    </ion-row>
+                  </div>
+                </div>
+              </div>
+
+            </ion-item>
+
+            <!--Open Source-->
+            <ion-item padding-top *ngIf="platformSelected">
+              <ion-label text-uppercase class="bold">Open Source</ion-label>
+            </ion-item>
+            <ion-row padding-left *ngIf="platformSelected">
+              <p>If you want your app to be open source, you can provide the download URL of your source code or upload it here.</p>
+            </ion-row>
+            <ion-item *ngIf="platformSelected">
+              <ion-label>Source code URL</ion-label>
+              <ion-input [disabled]="app.status === 'pending_publication' || app?.status_cu==='pending_update'" type="text" [(ngModel)]="app.openSource.sourceCodeURL" required></ion-input>
+            </ion-item>
+            <ion-row padding-left margin-top *ngIf="platformSelected">
+              <p>Uploading your source code archive has a limit of <span class="bold">{{sourceCodeArchiveSizeLimit}}MB.</span></p>
+            </ion-row>
+            <ion-item class="file-dropbox-custom-ion-item" *ngIf="platformSelected">
+              <file-dropbox *ngIf="!app.openSource?.sourceCodeDownloadURL" #dropboxArchiveSource class="file-dropbox-component" [fileSizeLimit]="sourceCodeArchiveSizeLimit" fileDropType="archive_source" (dragFileAccepted)="uploadFile('archive_source',$event.file)" [dontAcceptHover]="[app.status === 'pending_publication', app?.status_cu==='pending_update']" [class.file-dropbox-hovered]="dropboxArchiveSource.isHovering">
+                <!--IF NO OPENSOURCE UPLOADED & NOT UPLOADING-->
+                <div *ngIf="!app.openSource?.isUploading" class="file-dropbox-container" text-center>
+                  <div class="display-inherit" *ngIf="!app.openSource?.uploadingError">
+                    <div>
+                      <span text-center text-wrap>{{ app.status === 'pending_publication' || app?.status_cu==='pending_update' ? 'No file provided.' : 'Drop zip or rar file here or select a file.' }}</span>
+                    </div>
+                    <div *ngIf="app.status !== 'pending_publication' && app?.status_cu !== 'pending_update'">
+                      <label class="custom-browse-upload" tappable>Browse
+                        <input #sourceCodeUpload hidden type="file" accept=".zip,.rar" (change)="onCustomUploadChange($event,'archive_source',sourceCodeArchiveSizeLimit)" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <!--ERROR UPLOADING-->
+                  <div class="display-inherit" *ngIf="app.openSource?.uploadingError">
+                    <div text-center>
+                      <ion-icon name="md-close" class="size-36"></ion-icon>
+                    </div>
+                    <div text-center>
+                      <span>&nbsp; Error in uploading the file.</span>
+                    </div>
+                    <div text-center>
+                      <button ion-button (click)="app.openSource.uploadingError = false">Retry</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!--IF UPLOADING DEMO APP-->
+                <ion-grid *ngIf="app.openSource?.isUploading">
+                  <ion-row text-center>
+                    <ion-col class="nowrap size-14">
+                      Uploading <span class="bold">{{app.openSource?.sourceCodeFilename}}</span>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="center" col-12 col-sm-12 col-md-8 col-lg-6>
+                      <progress-bar [progress]="app.openSource?.progress" [hasPaused]="app.openSource?.paused"></progress-bar>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="center">
+                    <ion-col text-wrap class="v-center size-14 mright-5">
+                      {{ !app.openSource?.bytesTransferred ? 0 : app.openSource?.bytesTransferred | fileSize}} of {{app.openSource?.sourceCodeFilesize | fileSize}}
+                    </ion-col>
+                    <ion-col class="v-center" no-padding col-auto>
+                      <button *ngIf="!app.openSource?.paused" ion-button icon-only clear small (click)="changeUploadState('archive_source','pause',app.openSource.sourceCodeFilename)">
+                        <ion-icon name="md-pause"></ion-icon>
+                      </button>
+                      <button *ngIf="app.openSource?.paused" ion-button icon-only clear small (click)="changeUploadState('archive_source','resume',app.openSource.sourceCodeFilename)">
+                        <ion-icon name="md-play"></ion-icon>
+                      </button>
+                    </ion-col>
+                    
+                    <ion-col class="v-center" no-padding col-auto>
+                      <button ion-button icon-only clear small (click)="changeUploadState('archive_source','cancel',app.openSource.sourceCodeFilename)">
+                        <ion-icon name="md-close"></ion-icon>
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+
+              </file-dropbox>
+
+              <!--IF SOURCE CODE ARCHIVE EXIST-->
+              <div *ngIf="app.openSource && app.openSource?.sourceCodeDownloadURL" class="demo-container scroll" text-center>
+                <!--DONE STATE AND SOURCE CODE SHOWING-->
+                <div class="demo-app">
+                  <div class="demo-app-icon-container">
+                    <ion-col class="v-center pad-10">
+                      <ion-icon name="md-filing" color="primary" class="demo-app-icon"></ion-icon>
+                    </ion-col>
+                  </div>
+                  <div class="demo-app-details-container pad-10">
+                    <ion-row>
+                      <ion-col class="flex-vertical-center" text-left no-padding>
+                        <span class="bold">{{app.openSource?.sourceCodeFilename}}</span>
+                      </ion-col>
+                      <ion-col col-auto no-padding *ngIf="app.status !== 'pending_publication' && app?.status_cu !== 'pending_update'">
+                        <button ion-button icon-only clear small (click)="presentDeleteRelease('source_code')">
+                          <ion-icon name="md-close"></ion-icon>
+                        </button>
+                      </ion-col>
+                    </ion-row>
+                    <div class='separator-gray mtop-10 mbot-10'></div>
+                    <ion-row>
+                      <p text-left class="width-100">File size :</p>
+                      <p>{{app.openSource?.sourceCodeFilesize | fileSize}}</p>
+                    </ion-row>
+                    <ion-row>
+                      <p text-left class="width-100">Uploaded on :</p>
+                      <p>{{app.openSource?.dateCreated ? (app.openSource?.dateCreated | toFullDateAndTime) : ''}}</p>
+                    </ion-row>
+                    <ion-row>
+                      <button ion-button (click)="downloadFile(app.openSource.sourceCodeDownloadURL)">Download</button>
+                    </ion-row>
+
+                  </div>
+                </div>
+              </div>
+
+
+
+
+            </ion-item>
+
+
+
+          </ion-list>
+
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+ 
+</ion-content>

@@ -1,0 +1,9 @@
+<!-- OPTIONAL:  top level, fullpage box, used to ignore any drag/drop events which might make your browser do something stupid like load a pdf - nice for SinglePageApps... -->
+<div (dragover)="preventDefaultAndStopPropagation($event)" (dragleave)="preventDefaultAndStopPropagation($event)" (drop)="preventDefaultAndStopPropagation($event)">
+  <!-- your drag/drop box within the page -->
+  <div (dragleave)="onDragFileOverEnd($event)" (drop)="onDragFileDrop($event)" fileSizeLimit fileDropType hasCurrentUploading
+       (dragover)="onDragFileOverStart($event)">
+      <!-- stuff goes here, or you can use ng-content to embed other components -->
+      <ng-content></ng-content>
+  </div>
+</div>

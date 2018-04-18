@@ -1,0 +1,57 @@
+<div class="flex-v">
+  <div class="user-photo-placeholder mtop-5"  [id]="'user-photo-placeholder-'+review.$key">
+    <img [src]="review?.userPhotoURL" alt="" (load)="loadedUserPhoto(review.$key)" class="user-photo" (click)="navigateToUser(review?.user_uid)" tappable>
+  </div>
+  <div>
+    <div class="flex-v">
+      <span class="mleft-10 owner-name bold" (click)="navigateToUser(review?.user_uid)" tappable>{{review?.userName}}</span>
+      <star [rating]="review?.stars" [size]="'small'" [readOnly]="true" [labelText]="''" [hoverEnabled]="false" style='margin-top:3px'></star>
+    </div>
+    <span class="mleft-10 size-12">{{review?.dateReviewed | toFullDateAndTime}}</span>
+  </div>
+</div>
+<div class="mtop-10 pre-line" [class.review-comment]="clampText" [innerHtml]="review?.comment | linkify"></div>
+
+<ion-buttons end class="review-options-buttons" *ngIf="cacheService.user_uid === app.user_uid">
+  <button ion-button icon-only clear class="size-11" (click)="reviewOptions('edit',review)" *ngIf="review?.reply">
+    <ion-icon name="md-create"></ion-icon>
+  </button>
+  <button ion-button icon-only clear class="size-11" (click)="reviewOptions('delete',review)" *ngIf="review?.reply">
+    <ion-icon name="md-trash"></ion-icon>
+  </button>
+  <!--Reply-->
+  <button ion-button icon-only clear class="size-11" (click)="reviewOptions('reply',review)" *ngIf="!review?.reply">
+    <ion-icon name="ios-undo"></ion-icon>
+  </button>
+  <button ion-button icon-only clear class="size-11" (click)="reviewOptions('flag',review)">
+    <ion-icon name="md-flag" [color]="review?.isFlagged ? 'primary':'dark'"></ion-icon>
+  </button>
+</ion-buttons>
+
+<!--Reply box-->
+<div class="reply-container" *ngIf="isEditing">
+  <ion-textarea [(ngModel)]="reply" rows="4" placeholder="Write your comment" maxlength="1000"></ion-textarea>
+  <div class="separator mtop-5 mbot-5"></div>
+  <div class="flex-between">
+    <p ion-text float-left class="size-13"> {{reply ? reply?.length : 0}}/1000</p>
+    <button ion-button icon-only clear class="size-11" (click)="sendReply()" float-right>
+      <ion-icon name="md-send"></ion-icon>
+    </button>
+  </div>
+</div>
+<!--{{review?.reply?.comment}}-->
+<div class="arrow-up developer-reply-arrow" [class.reply-container]="cacheService.user_uid === app.user_uid" *ngIf="review?.reply && !isEditing"></div>
+<div class="flex-v pad-10 developer-reply" *ngIf="review?.reply && !isEditing">
+  <div class="user-photo-placeholder mtop-5"  [id]="'user-photo-placeholder-'+review?.reply?.$key">
+    <img [src]="review?.reply?.userPhotoURL" alt="" (load)="loadedUserPhoto(review?.reply?.$key)" class="user-photo" (click)="navigateToUser(review?.reply?.user_uid)" tappable>
+  </div>
+  <div>
+    <div class="flex-v">
+      <span class="mleft-10 owner-name bold" (click)="navigateToUser(review?.reply?.user_uid)" tappable>{{review?.reply?.userName}}</span>
+    </div>
+    <span class="mleft-10 size-12">{{review?.reply?.dateReplied | toFullDateAndTime}}</span>
+  </div>
+</div>
+<div class="developer-reply pad-10 mbot-10" *ngIf="review?.reply && !isEditing">
+  <span class="pre-line" [class.review-comment]="clampText" [innerHtml]="review?.reply?.comment | linkify"></span>
+</div>

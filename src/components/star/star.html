@@ -1,0 +1,16 @@
+<star-rating-comp [starType]="'svg'" 
+                  [labelPosition]="'top'"
+                  [labelText]="labelText"
+                  [rating]="rating"
+                  [readOnly]="readOnly"
+                  [size]="size"
+                  [showHalfStars]="true"
+                  [hoverEnabled]="hoverEnabled"
+                  (onRatingChange)="onRatingChange($event)">
+</star-rating-comp>
+                  <!--(onClick)="onClick($event)" 
+                  (onHoverRatingChange)="onHoverRatingChange($event)"-->
+
+<!--<p>onHoverRatingChangeResult: {{onHoverRatingChangeResult | json}}</p>
+<p>onClickResult: {{onClickResult | json}}</p>
+<p>onRatingChangeResult: {{onRatingChangeResult | json}}</p>-->

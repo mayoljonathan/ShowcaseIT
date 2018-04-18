@@ -1,0 +1,95 @@
+<fullscreen-content>
+  
+  <ion-header content-type="header">
+    <ion-navbar>
+      <button ion-button icon-only menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title class="project-title">ShowcaseIT</ion-title>
+      <ion-buttons end *ngIf="!isSearching" id="searchBarIcon">
+        <button ion-button icon-only (click)="isSearching = true">
+          <ion-icon color="white" name="search"></ion-icon>
+        </button>      
+      </ion-buttons>
+    
+      <div class="searchBar-container" *ngIf="isSearching">
+        <ion-searchbar #searchBar
+            (click)="dim = true"
+            (ionBlur)="dim = false"
+            [(ngModel)]="searchInput"
+            animated="true"
+            showCancelButton="true"
+            (ionCancel)="isSearching = false"
+            placeholder="Search for Apps and Developers"
+            (search)="onSearch()">
+        </ion-searchbar>
+      </div>
+    </ion-navbar>  
+  </ion-header>
+
+  <ion-content class="bg" content-type="body">
+    <div class="dim" *ngIf="dim"></div>
+
+    <div padding class="flex-hv full-height" *ngIf="!loadedApps">
+      <div class="loader center"></div>
+    </div>
+
+    <div padding class="flex-hv full-height" *ngIf="loadedApps && apps?.length == 0">
+      <div class="grid-center">
+        <ion-icon name="md-apps" class="large-icon"></ion-icon>
+        <span class="size-18">There are no apps available to show. Showcase your app so that you can see it here!</span>
+      </div>
+    </div>
+
+    <div class='container center' *ngIf="loadedApps && apps?.length != 0">
+      <ion-scroll class='horizontal-scroller mtop-10 mbot-10' text-center scrollX="true" scroll-avatar style="z-index: 0">
+        <ion-chip class='mleft-10' tappable (click)="filterApps('web')">
+          <ion-icon name="md-globe" class='scroll-item'></ion-icon>
+          <ion-label>Web Apps</ion-label>
+        </ion-chip>
+        <ion-chip tappable (click)="filterApps('android')">
+          <ion-icon name="logo-android" class='scroll-item'></ion-icon>
+          <ion-label>Android Apps</ion-label>
+        </ion-chip>
+        <ion-chip tappable (click)="filterApps('desktop')">
+          <ion-icon name="md-desktop" class='scroll-item'></ion-icon>
+          <ion-label>Desktop Apps</ion-label>
+        </ion-chip>
+        <ion-chip tappable (click)="filterApps('games')">
+          <ion-icon name="md-game-controller-b" class='scroll-item'></ion-icon>
+          <ion-label>Games</ion-label>
+        </ion-chip>
+
+        <ion-chip tappable (click)="filterApps('downloadable')">
+          <ion-icon name="md-cloud-download" class='scroll-item'></ion-icon>
+          <ion-label>Downloadable</ion-label>
+        </ion-chip>
+        <ion-chip class='mright-10' tappable (click)="filterApps('opensource')">
+          <ion-icon name="md-code-download" class='scroll-item'></ion-icon>
+          <ion-label>Open Source</ion-label>
+        </ion-chip>
+      </ion-scroll>
+
+      <ion-grid no-padding>
+        <ion-row>
+          <ion-col class="push-left center">
+            <h6 class='mleft-10 center'>New Showcased Apps</h6>
+          </ion-col>
+          <ion-col col-auto class="push-right center">
+            <button ion-button small class='mright-10' (click)="seeMore('new_showcased')">View more</button>
+          </ion-col>
+        </ion-row>
+
+        <masonry *ngIf="apps && apps.length != 0 && loadedApps">
+          <masonry-brick class="brick" *ngFor="let app of (apps | sort:'datePublished':'desc' | slice:0:6);let i=index">
+            <app-card [app]="app"></app-card>
+          </masonry-brick>
+        </masonry>
+      </ion-grid>
+
+    </div>
+  </ion-content>
+
+</fullscreen-content>
+
+

@@ -1,0 +1,90 @@
+app-card {
+    .app-icon{
+        width: 40px;
+        height: 40px;
+        max-width: 40px;
+        border-radius: 5px;
+    }
+
+    @keyframes placeHolderShimmer{
+        0%{
+            background-position: -40px 0
+        }
+        100%{
+            background-position: 40px 0
+        }
+    }
+    .app-icon-placeholder {
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: placeHolderShimmer;
+        animation-timing-function: linear;
+        background: #f6f7f8;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+    .app-thumbnail-container{
+        height: 100%;
+    }
+    .app-thumbnail-placeholder{
+        height: 200px;
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: thumbnailShimmer;
+        animation-timing-function: linear;
+        background: #f6f7f8;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+        width: 100%;
+        height: 200px;
+        min-width: 100%;
+        min-height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+    @keyframes thumbnailShimmer{
+        0%{
+            background-position: -500px 0
+        }
+        100%{
+            background-position: 500px 0
+        }
+    }
+    .app-thumbnail-image{
+        height: 200px;
+        min-height: 200px;
+        max-height: 200px;
+        object-fit: cover !important;
+        // background-position: center;
+        // background-repeat: no-repeat;
+        // background-size: cover;
+        // border-bottom: 0.5px solid #dedede;
+    }
+    .app-card-title{
+        font-size: 16px;
+    }
+    .app-stats-container{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        
+    }
+    .card-footer{
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: 8px;
+        padding-top: 8px;
+        background-color: #f1f1f1;
+    }
+
+    ion-card-content{
+        min-height: 160px;
+        max-height: 160px;
+    }
+}

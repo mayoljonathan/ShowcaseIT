@@ -1,0 +1,28 @@
+page-app-publish {
+    .publish-container{
+        height: 300px;
+        width: 100%;
+    }
+    .app-error-icon{
+        width: 20px;
+    }
+    .error-name{
+        display: list-item;
+    }
+    .publish-info{
+        border: 1px solid #488aff;
+        background-color: #E7F2F5;
+        padding: 10px;
+        max-width: 90%;
+        width: fit-content;
+        margin: auto;
+        text-align: left;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    .publish-errors{
+        max-width: 90%;
+        width: fit-content;
+        margin: auto;
+    }
+}

@@ -1,0 +1,150 @@
+<ion-split-pane>
+
+  <ion-menu [content]="content">
+    <ion-header>
+
+      <div class="side-nav-panel">
+        
+        <div *ngIf="cacheService.isLoggedIn && user">
+          <img tappable [src]="user?.photoURL ? user?.photoURL : 'assets/images/user-placeholder.png'" alt="" class="user-photo" (click)="navigateToUser()">
+          <span [class]='providerContainerClass'>
+            <div class='provider-icon-container'>
+              <ion-icon [name]="providerName"
+                        [class.user-provider-icon-fb]='user?.facebook_id' 
+                        [class.user-provider-icon-google]='user?.google_id' 
+                        [class.user-provider-icon-github]='user?.github_id'>
+              </ion-icon>
+            </div>
+          </span>
+          <div tappable *ngIf="user?.name" class="display-grid pad-5 user-data-container" (click)="changeProfileData()">
+            <span class="bold white size-15">{{user?.name}}</span>
+            <span class="white size-15">{{user?.email}}</span>
+          </div>
+          <button float-right small clear ion-button icon-right class="white" (click)="signOut()">Sign out
+            <ion-icon name="md-log-out" color="white"></ion-icon>
+          </button>
+        </div>
+
+        <div *ngIf="!cacheService.isLoggedIn" class="flex-hv full-height full-width">
+          <button ion-button (click)="showSignInModal()" >Sign in</button>
+        </div>
+      </div>
+
+      <!--<div class="side-nav-panel">
+        <div *ngIf="!cacheService.isLoggedIn">
+          <div class="item-profile">
+            <div class="item-avatar" text-center>
+              <ion-icon name="contact" class="large-icon"></ion-icon>
+            </div>
+          </div>
+          <div text-center>
+            <button ion-button (click)="showSignInModal()" >Sign in</button>
+          </div>
+        </div>
+
+        <div *ngIf="cacheService.isLoggedIn">
+          <div *ngIf='!user' text-center>
+            <div class="loader-sm"></div>
+          </div>
+          <div *ngIf='user'>
+            <div class="item-profile" text-center>
+              <span [class]='providerContainerClass'>
+                <div class='provider-icon-container'>
+                  <ion-icon [name]="providerName"
+                            [class.user-provider-icon-fb]='user?.facebook_id' 
+                            [class.user-provider-icon-google]='user?.google_id' 
+                            [class.user-provider-icon-github]='user?.github_id'>
+                  </ion-icon>
+                </div>
+              </span>
+              <div class="item-avatar">
+                <img [src]="user?.photoURL" class="user-photo-sm">
+              </div>
+              <div class='padLR-10 size-16 bold word-wrap'>{{user?.name}}</div>
+              <div class='padLR-10 work-break'>{{user?.email}}</div>
+            </div>
+            <div text-center>
+              <button ion-button (click)="signOut()">Sign Out</button>
+            </div>
+          </div>
+        </div>
+        
+      </div>-->
+      
+    </ion-header>
+
+    <ion-content *ngIf='cacheService.isDoneCheckingUserData'>
+      <ion-list class="mtop-10" no-lines>
+        <div>
+          <!--Main-->
+          <div *ngFor="let p of pages | slice:0:3" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+            <button ion-item menuClose (click)="openPage(p)" *ngIf="cacheService.isLoggedIn ? p.requiresLogin || p.index==0 || p.index==3 : !p.requiresLogin" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+              <ion-icon item-start md-name [md-name]="p.icon" [color]="selectedSideMenuIndex==p.index ? 'primary':null"></ion-icon>{{p.title}}
+            </button>
+          </div>
+         
+          <!--<div class='separator-gray mtop-10 mbot-10' *ngIf="cacheService.isLoggedIn"></div>-->
+
+          <!--RAP,Help,About-->
+          <!--<div *ngFor="let p of pages | slice:2:3" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null" class="mbot-10">
+            <button ion-item menuClose (click)="openPage(p)" *ngIf="cacheService.isLoggedIn ? p.requiresLogin || p.index==3 || p.index==5 : !p.requiresLogin" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+              <ion-icon item-start md-name [md-name]="p.icon" [color]="selectedSideMenuIndex==p.index ? 'primary':null"></ion-icon>{{p.title}}
+            </button>
+          </div>-->
+         
+          <!--<div class='separator-gray mtop-10 mbot-10' *ngIf="cacheService.isLoggedIn"></div>-->
+
+          <!--Dev Buttons-->
+          <!--If not a dev-->
+          <div *ngIf="!cacheService.isDeveloper && user && cacheService.isLoggedIn">
+            <ion-list-header>Development</ion-list-header>
+            <div *ngFor="let p of pages | slice:3:4" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+              <button ion-item menuClose (click)="openPage(p)" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+                <ion-icon item-start md-name [md-name]="p.icon" [color]="selectedSideMenuIndex==p.index ? 'primary':null"></ion-icon>{{p.title}}
+              </button>
+            </div>
+          </div>
+          <!--If a dev-->
+          <div *ngIf="cacheService.isDeveloper && user && cacheService.isLoggedIn">
+            <ion-list-header>Development</ion-list-header>
+            <div *ngFor="let p of devPanelPages" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+              <button ion-item menuClose (click)="openPage(p)" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+                <ion-icon item-start md-name [md-name]="p.icon" [color]="selectedSideMenuIndex==p.index ? 'primary':null"></ion-icon>{{p.title}}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <ion-list-header>More</ion-list-header>
+            <div *ngFor="let p of morePages">
+              <button ion-item menuClose (click)="openPage(p)">
+                <ion-icon item-start md-name [md-name]="p.icon" [color]="selectedSideMenuIndex==p.index ? 'primary':null"></ion-icon>{{p.title}}
+              </button>
+            </div>
+          </div>
+
+          
+
+        </div>
+
+        <!--In Developer Panel Sidemenu-->
+        <!--<div *ngIf="isDeveloperMode && cacheService.isLoggedIn">
+          <div *ngFor="let p of devPanelPages" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+            <button ion-item menuClose (click)="openPage(p)" [class.sideMenuActive]="selectedSideMenuIndex==p.index ? true:null">
+              <ion-icon item-start md-name [md-name]="p.icon" [color]="selectedSideMenuIndex==p.index ? 'primary':null"></ion-icon>{{p.title}}
+            </button>
+          </div>
+        </div>-->
+
+      </ion-list>
+
+      <!--<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>-->
+      
+    </ion-content>
+
+  </ion-menu>
+
+  <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+  <ion-nav main [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+  
+</ion-split-pane>

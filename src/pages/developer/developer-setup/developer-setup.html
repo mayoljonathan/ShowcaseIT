@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon color="white" name="menu"></ion-icon>
+    </button>
+    <ion-title>Become a Developer</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class='bg' content-type="header">
+  <div class='container center'>
+
+    <div class="v-center">
+      <img src="../assets/images/developers.png" class="center dev-icon"/>
+    </div>
+    <div text-center>
+      <h3 class="bold-lighter">What can you do as a Developer</h3>
+    </div>
+    <ion-card>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            
+            <ion-col col-lg-12 col-md-12 col-sm-12 col-12>
+              <!--<h2 text-center>Applications</h2>-->
+              <ion-list>
+                <ion-item text-wrap no-padding *ngFor="let perk of perks[0]">
+                  <ion-icon md-name [md-name]="perk.icon" item-start></ion-icon>{{perk.description}}
+                </ion-item> 
+              </ion-list>
+            </ion-col>
+
+            <!--<ion-col col-lg-6 col-md-6 col-sm-12 col-12>
+              <h2 text-center>Developer Team</h2>
+              <ion-list>
+                <ion-item text-wrap no-padding *ngFor="let perk of perks[1]">
+                  <ion-icon md-name [md-name]="perk.icon" item-start></ion-icon>{{perk.description}}
+                </ion-item>
+              </ion-list>
+            </ion-col>-->
+            
+          </ion-row>
+
+          <ion-row class="mtop-10">
+            <div class="push-right center">
+               <!--class="v-center"-->
+              <ion-col col-auto class="col-checkbox"> 
+                <ion-checkbox [(ngModel)]="isAgree"></ion-checkbox>
+              </ion-col>
+              <ion-col>
+                <span>I have read and agree to the
+                  <a href="./app_content_guidelines/index.html" target="_blank" class="link">App Content Guidelines</a>.
+                </span>
+              </ion-col>
+            </div>
+          </ion-row>
+
+          <ion-row class="center">
+            <button ion-button [disabled]="!isAgree" (click)="setUserAsDeveloper()">Become a Developer</button>
+          </ion-row>
+
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

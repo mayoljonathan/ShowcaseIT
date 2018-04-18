@@ -1,0 +1,53 @@
+<ion-content class="bg">
+  <div class="flex-hv full-height" *ngIf="!pageLoaded">
+    <div class="loader"></div>
+  </div>
+  <div class="flex-hv full-height" *ngIf="apps && apps?.length == 0 && pageLoaded">
+    <div>
+      <ion-icon name="md-apps" class="large-icon flex-h"></ion-icon>
+      <h2 class="size-18">You have no downloaded apps.</h2>
+    </div>
+  </div>
+
+  <!--With apps-->
+  <div padding class="container center" *ngIf="apps && apps?.length > 0 && pageLoaded">
+    <ion-card class="table-card-container">
+      <ion-row class="th-bg separator-bot">
+        <ion-col no-padding class="flex-hv">
+          <ion-item class="th-bg">
+            <ion-icon name="md-search" item-start></ion-icon>
+            <ion-input #searchBarInput placeholder="Search apps" clearInput></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      
+      <ion-row class="scroll-x">
+        <table class="full-width">
+          <tbody>
+            <tr class="table-row" *ngFor="let a of (apps | filter: searchBarInput.value:'title' | sort:'dateLastDownloaded':'desc' );let i=index" padding tappable>
+              <td class="table-name-container" (click)='navigateToApp(i)'>
+                <div class="app-icon-placeholder" [id]="'app-icon-placeholder-'+i">
+                  <img [src]="a.thumbIconURL || a.iconURL" alt="" (load)="loadedAppIcon(i)" class="app-icon">
+                </div>
+                <span class="table-name">{{a?.title}}</span>
+              </td>
+              <td text-right (click)='navigateToApp(i)'>
+                <span class="size-13">Last downloaded {{a?.dateLastDownloaded | timeFromNow}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ion-row>
+
+      <!--EMPTY SEARCH-->
+      <div class="flex-hv h-300" *ngIf="apps?.length!=0 && (apps | filter: searchBarInput.value:'title')?.length === 0">
+        <div>
+          <ion-icon md-name="search" class="large-icon flex-h"></ion-icon>
+          <h2 class="size-18">No apps matched in your search query.</h2>
+        </div>
+      </div>
+
+    </ion-card>
+  </div>
+  
+</ion-content>

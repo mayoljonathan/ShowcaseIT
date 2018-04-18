@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Download {{app?.title}}</ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="pure-white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+	Available for download:
+	<ion-list class="mtop-5">
+		<button (click)="navigateTo('opensource')" ion-item *ngIf="app?.openSource && (app?.openSource?.sourceCodeURL || app?.openSource?.sourceCodeDownloadURL)">
+			<ion-icon name="md-code-download" color="primary" item-start></ion-icon>Download Source Code
+			<div item-content><ion-badge color="primary" class="flex-v"><ion-icon name="md-download" class="white mright-5"></ion-icon>{{appStats?.downloads?.source_code || 0}}</ion-badge></div>
+		</button>
+		<button (click)="navigateTo('android')" ion-item *ngIf="app?.platforms?.android?.demoURL || app?.platforms?.android?.releases">
+			<ion-icon name="logo-android" color="android" item-start></ion-icon>Download Android App
+			<div item-content><ion-badge color="primary" class="flex-v"><ion-icon name="md-download" class="white mright-5"></ion-icon>{{appStats?.downloads?.android || 0}}</ion-badge></div>
+		</button>
+		<button (click)="navigateTo('desktop')" ion-item *ngIf="app?.platforms?.desktop.demoURL || app?.platforms?.desktop?.demoDownloadURL">
+			<ion-icon name="md-desktop" item-start></ion-icon>Download Desktop App
+			<div item-content><ion-badge color="primary" class="flex-v"><ion-icon name="md-download" class="white mright-5"></ion-icon>{{appStats?.downloads?.desktop || 0}}</ion-badge></div>
+		</button>
+
+	</ion-list>
+</ion-content>
+
+<ion-nav [root]="root"></ion-nav>

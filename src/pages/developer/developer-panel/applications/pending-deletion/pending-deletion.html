@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar color="dev-dark">
+    <ion-title>
+			Pending Deletion
+    </ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="pure-white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--<ion-list margin-top>
+    <ion-item *ngFor="let app of apps;let i=index;">
+      <div class="pending-app-icon-placeholder" [id]="'pending-app-icon-placeholder-'+i" item-start>
+        <img [src]="app.thumbIconURL ? app.thumbIconURL : '../assets/icon/icon-placeholder.png'" (load)="loadedAppIcon(i)" alt="icon" class="app-icon">
+      </div>
+
+      <ion-label>{{app.title}}</ion-label>
+      <ion-checkbox (ionChange)="onAppSelected(app)"></ion-checkbox>
+      <ion-label item-right>{{app.scheduledDeletion | toDate}}</ion-label>
+    </ion-item>
+  </ion-list>-->
+
+  <ion-scroll scrollX="true" scrollY="true" class="full-height" padding> 
+      <div *ngIf='!apps' text-center class="webkit-height">
+        <div class="v-center height-inherit">
+          <div class="loader"></div>
+        </div>
+      </div>
+
+      <div *ngIf="apps?.length==0" text-wrap class="webkit-height">
+        <div class="v-center height-inherit">
+          <div text-center>
+            <ion-icon md-name="delete_sweep" color="dark" class="large-icon"></ion-icon>
+            <h2 class="size-18 bold">You have no pending deleted apps</h2>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="apps && apps?.length!=0" class="mbot-56">
+        <span>These apps will be automatically deleted on the scheduled date in 12 midnight.</span>
+        <table class="full-width center mtop-15">
+          <thead>
+            <tr>
+              <th width="40"></th>
+              <th text-uppercase text-left>App Name</th>
+              <th text-center text-uppercase>Scheduled Deletion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="app-row" *ngFor="let app of apps;let i=index" text-wrap no-padding tappable (click)="onAppSelected(i)">
+              <td>
+                <ion-checkbox [checked]="app.selected" (click)="onAppSelected(i)"></ion-checkbox>
+              </td>
+              <td class="app-name-container">
+                <div class="pending-app-icon-placeholder" [id]="'pending-app-icon-placeholder-'+i" item-start>
+                  <img [src]="app.thumbIconURL ? app.thumbIconURL : '../assets/icon/icon-placeholder.png'" (load)="loadedAppIcon(i)" alt="icon" class="app-icon">
+                </div>
+                <span class="app-title">{{app.title}}</span>
+              </td>
+              <td text-center>
+                {{app.scheduledDeletion | toDate}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+  </ion-scroll>
+
+  <ion-footer *ngIf="fetchLoaded && apps?.length!=0">
+    <ion-toolbar color="dev-dark">
+      <ion-buttons end>
+        <button ion-button (click)="dismiss()" color="pure-white">Cancel</button>
+        <button ion-button color="pure-white" [disabled]="!fetchLoaded || !isRestoreEnabled" (click)="restoreApps()">Restore</button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-footer>
+  
+
+</ion-content>

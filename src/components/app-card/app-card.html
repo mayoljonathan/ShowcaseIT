@@ -1,0 +1,58 @@
+<ion-card tappable (click)="goToApp(app)" *ngIf="app?.screenshots">
+  <div class="transparent">
+    <ion-card-header no-padding>
+      <div class="app-thumbnail-container app-thumbnail-placeholder" [id]="'app-thumbnail-placeholder-'+shimmerRandomID">
+        <img [src]="app?.screenshots[0]['low_res']" (load)="loadedAppThumbnail(shimmerRandomID)" class="app-thumbnail-image" alt=""/>
+      </div>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-row>
+        <ion-col col-auto no-padding class="mright-10">
+          <div class="app-icon-placeholder" [id]="'app-icon-placeholder-'+shimmerRandomID">
+            <img [src]="app.thumbIconURL || app.iconURL" (load)="loadedAppIcon(shimmerRandomID)" alt="" class="app-icon">
+          </div>
+        </ion-col>
+        <ion-col class="app-title-column center" no-padding>
+          <ion-row>
+            <h4 class="bold-500 app-card-title">{{app?.title}}</h4>
+          </ion-row>
+          <ion-row *ngIf="!hideDeveloperName">
+            <span class="size-13">by {{app?.developer_name}}</span>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="mtop-5">
+        <ion-col col-auto no-padding>
+          <div class="app-card-description mtop-10">{{app.short_description}}</div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="v-center">
+        <ion-col no-padding>
+          <ion-icon *ngIf="app?.platforms?.web?.isCompatible" name="md-globe" class="mright-10"></ion-icon>
+          <ion-icon *ngIf="app?.platforms?.android?.isCompatible" name="logo-android" color="android" class="mright-10"></ion-icon>
+          <ion-icon *ngIf="app?.platforms?.desktop?.isCompatible" name="md-desktop" class="mright-10"></ion-icon>
+        </ion-col>
+
+        <ion-col *ngIf="app?.openSource" no-padding class="flex-push-right">
+          <button ion-button small outline >Open Source</button>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+
+    <ion-row class="card-footer">
+      <div class="app-stats-container" [style.flex-direction]="!appStats?.averageStarRating ? 'row-reverse':''">
+        <div class="flex-v" *ngIf="appStats?.averageStarRating">
+          {{appStats?.averageStarRating}} <ion-icon name="md-star" class="mleft-5" color="primary"></ion-icon>
+        </div>
+        <div class="flex-v">
+          <div class="flex-v" *ngIf="appStats?.totalDownloads && appStats?.totalDownloads != 0">
+            {{appStats?.totalDownloads}} <ion-icon name="md-download" class="mleft-5 mright-10"></ion-icon>
+          </div>
+          {{appStats?.totalViews}} <ion-icon name="md-eye" class="mleft-5"></ion-icon>
+        </div>
+      </div>
+    </ion-row>
+  </div>
+</ion-card>

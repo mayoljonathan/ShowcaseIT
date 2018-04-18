@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Update Profile</ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <div class="user-photo-container">
+    <img tappable [src]="user?.photoURL ? user?.photoURL : 'assets/images/user-placeholder.png'" alt="" class="user-photo" imageViewer>
+  </div>
+  <div class="flex-hv">
+    <div margin-top *ngIf="isUploading">Uploading {{progress ? progress : '0'}}%</div>
+    <div margin-top *ngIf="errorUpload">Error in uploading the photo</div>
+    <label class="custom-file-upload" margin-top tappable [hidden]="isUploading">Upload Photo
+      <input #photoUpload hidden type="file" accept="image/*" (change)="onPhotoChange($event)" />
+    </label>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submitForm(form)">
+    <ion-list>
+      <ion-item no-padding>
+        <ion-label floating>Name</ion-label>
+        <!--<ion-input formControlName="name" type="text" [value]="user?.name ? user?.name : ''"></ion-input>  -->
+        <ion-input disabled [value]="user?.name ? user?.name : ''"></ion-input>  
+      </ion-item>
+      <!--<p ion-text *ngIf="form.controls.name.value.trim().length==0 && (form.controls.name.dirty || submitAttempt)" color="danger">Name is required</p>-->
+      <!--<p ion-text *ngIf="form.controls.name.value.trim().length>50 && (form.controls.name.dirty || submitAttempt)" color="danger">Name must not exceed to 50 characters</p>-->
+    
+      <ion-item no-padding>
+        <ion-label floating>Email</ion-label>
+        <ion-input disabled [value]="user?.email ? user?.email : ''"></ion-input>  
+      </ion-item>
+
+      <ion-item no-padding>
+        <ion-label stacked>Bio</ion-label>
+        <ion-textarea rows="8" placeholder="Enter a brief description about yourself" formControlName="bio" type="text" [value]="user?.bio ? user?.bio : ''"></ion-textarea>  
+      </ion-item>
+      <p ion-text *ngIf="form.controls.bio.value.trim().length>1000 && (form.controls.bio.dirty || submitAttempt)" color="danger">Bio must not exceed to 1000 characters</p>
+    </ion-list>
+
+    <ion-row margin-bottom float-right>
+      <button ion-button [disabled]="isUploading" type="submit">Save Changes</button>
+    </ion-row>
+  </form>
+
+</ion-content>

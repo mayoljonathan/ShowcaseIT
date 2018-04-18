@@ -1,0 +1,102 @@
+page-add-release {
+    .item-md.item-block .item-inner {
+        border-bottom: none !important;
+    }
+
+    div.scroll-content > ion-item > div.item-inner > div > ion-label{
+        margin: 0px 8px 13px 0 !important;
+    }
+
+    .file-dropbox-component{
+        height: 200px;
+        width: 100%;
+        border: 1px dashed #BDBDBD;
+        // margin-left: 10px;
+        // margin-right: 10px;
+        padding: 10px;
+        
+        div:not([class]){
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .file-dropbox-container{
+            // display: grid;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        // 
+        .custom-browse-upload {
+            width: 100px;
+            margin: 5px auto;
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 2px;
+            font-size: 1.4rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #fff;
+            background-color: #488aff;
+            -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+            -webkit-transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-browse-upload:hover {
+            background-color: #2F79F9;
+        }
+    }
+    .file-dropbox-hovered{
+        border: 1px dashed #488aff !important;
+        background-color: #f1f1f1;
+    }
+
+    .demo-android-container{
+        height: 180px;
+        max-height: 180px;
+        width: 100%;
+        border: 1px solid #BDBDBD;
+    }
+    .demo-container{
+        width: 100%;
+        border: 1px solid #BDBDBD;
+    }
+    .demo-app{
+        display: flex;
+        align-items: center;
+    }
+    .demo-app-icon-container{
+        width: 100px;
+    }
+    .demo-app-details-container{
+        flex: 1;
+    }
+    .demo-app-icon{
+        font-size: 56px;
+    }
+
+    .demo-section{
+        margin-left: -13px;
+        margin-top: 10px;
+        width: 140px;
+        background-color: #607D8B;
+        -webkit-clip-path: polygon(0 0, 75% 0, 100% 100%, 0% 100%);
+        clip-path: polygon(0 0, 75% 0, 100% 100%, 0% 100%);
+
+        h3{
+            color: #fff;
+        }
+    }
+    
+    textarea{
+        resize: vertical;
+        max-height: 300px;
+    }
+
+}

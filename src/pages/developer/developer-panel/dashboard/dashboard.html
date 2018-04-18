@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar color="dev-dark">
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu" color="light"></ion-icon>
+    </button>
+    <ion-title>Dashboard</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content class="bg">
+  <div class="container center page-container">
+		<ion-card style="margin-top:0px">
+
+      <div padding>
+        <span class="size-18">You have {{apps?.length>=1 ? apps?.length+' apps' : apps?.length+' app' }} in your account.</span>
+        <div class="mtop-5">
+          <ion-badge>Published: {{publishedApps ? publishedApps : 0}}</ion-badge>
+          <ion-badge color="disabled">Unpublished: {{unpublishedApps ? unpublishedApps : 0}}</ion-badge>
+          <ion-badge color="warning">Pending Publication: {{pendingPublicationApps ? pendingPublicationApps : 0}}</ion-badge>
+          <ion-badge color="warning">Pending Update: {{pendingUpdateApps ? pendingUpdateApps : 0}}</ion-badge>
+        </div>
+        
+      </div>
+
+
+
+
+      <ion-item>
+        <ion-label>Select an application:</ion-label>
+        <ion-select name="appType" interface="popover" #appType (ionChange)="onAppChange(appType.value)">
+          <ion-option *ngFor="let app of apps" [value]="app?.uid">{{app?.title}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+		</ion-card>
+  </div>
+</ion-content>

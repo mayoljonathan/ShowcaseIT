@@ -1,0 +1,18 @@
+page-dashboard {
+    @media (max-width: 576px){
+        .container {
+            padding: 0 !important;
+
+            ion-card{
+                margin: 0 !important;
+                width: 100%;
+            }
+        }
+    }
+    .page-container{
+        padding: 0 16px 16px 16px;
+    }
+    ion-badge{
+        margin: 2px;
+    }
+}

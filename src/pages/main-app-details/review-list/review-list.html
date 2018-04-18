@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>User Reviews ({{reviews?.length ? reviews?.length : '0'}})</ion-title>
+		<ion-buttons end>
+			<button ion-button (click)="dismiss()">
+				<ion-icon name="close" color="pure-white"></ion-icon>
+			</button>
+		</ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <!--<div *ngFor="let review of (reviews | sort:'dateReviewed':'desc')" margin-bottom>
+    <review [review]="review"></review>
+  </div>-->
+  <div class="full-height flex-hv"  *ngIf="reviews && reviews?.length == 0">
+    <span> There are no reviews in this application.</span>
+  </div>
+
+  <masonry [options]="{gutter:5}" *ngIf="reviews && reviews?.length != 0">
+    <masonry-brick class="full-width" [class.isYourReview]='review?.user_uid === cacheService?.user_uid' *ngFor="let review of (reviews | sort:'dateReviewed':'desc')">
+      <review [review]="review" [app]="app"></review>
+      <div class="separator padTB-8"></div>
+    </masonry-brick>
+  </masonry>
+</ion-content>

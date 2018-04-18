@@ -1,0 +1,34 @@
+<ion-content class="bg">
+	<div class="header"></div>
+	<div class="header-title">
+		<button class="close-button" clear ion-button (click)="dismiss()">
+			<ion-icon name="close" color="pure-white"></ion-icon>
+		</button>
+		<div class="header-title-text">ShowcaseIT</div>
+		<div class="header-title-sub"> a place where you can showcase your apps, share source codes, and distribute your apps to other users.</div>
+	</div>
+	<div class="body">
+		<div class="panel-info" *ngIf="requireNote">
+			<div class="flex-hv">
+				<ion-icon name="alert" margin-right></ion-icon>
+				<span>Sign in first to continue.</span>
+			</div>						
+		</div>
+
+		<div col-12 text-center *ngFor="let sb of socialButtons">
+			<button ion-button icon-left (click)="loginWith(sb.name)" [color]="sb.name" class="social-button">
+				<ion-grid>
+					<ion-row>
+						<ion-col col-2>
+							<ion-icon [name]="sb.icon" class='white'></ion-icon>
+						</ion-col>
+						<ion-col col-10 class='white'>Sign in with <span class="capitalize white">{{sb.name}}</span></ion-col>
+					</ion-row>
+				</ion-grid>
+			</button>
+		</div>
+		<div text-center margin>
+			By signing in, you accept our <a href="./terms_of_service/index.html" target="_blank" class="link">Terms of Service</a> and <a href="./privacy_policy/index.html" target="_blank" class="link">Privacy Policy</a>.
+		</div>
+	</div>
+</ion-content>

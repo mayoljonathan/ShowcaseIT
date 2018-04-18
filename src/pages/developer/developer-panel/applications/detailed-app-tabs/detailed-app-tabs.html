@@ -1,0 +1,28 @@
+<ion-header no-border>
+  <ion-navbar color="dev-dark">
+    <ion-buttons start left>
+      <button ion-button icon-only (click)="goBack()">
+        <ion-icon name="md-arrow-back" color="pure-white"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>{{app?.title}}</ion-title>
+    <ion-buttons end right>
+      <!--<button ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="more" color="pure-white"></ion-icon>
+      </button>-->
+      <!--<button ion-button (click)="saveDraft()">Save Draft</button>-->
+      <div  tappable class="save-draft" [class.disabled-save-draft]="app?.status === 'pending_publication' || app?.status_cu === 'pending_update'" 
+      (click)="updateAppData('save_draft')">Save Draft</div>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <super-tabs #superTabs scrollTabs="true" sideMenu="left" toolbarBackground="dev-dark" toolbarColor="pure-white" indicatorColor="pure-white" (tabSelect)="onTabSelect($event)">
+    <super-tab [root]="tab1" title="Details" [rootParams]="navParams.data"></super-tab>
+    <super-tab [root]="tab2" title="Distribution" [rootParams]="navParams.data"></super-tab>
+    <super-tab [root]="tab3" title="Releases" [rootParams]="navParams.data"></super-tab>
+    <super-tab [root]="tab4" title="Publish & Review" [rootParams]="navParams.data"></super-tab>
+  </super-tabs>
+</ion-content>
+

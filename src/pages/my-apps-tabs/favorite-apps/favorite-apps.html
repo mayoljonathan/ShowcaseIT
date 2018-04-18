@@ -1,0 +1,22 @@
+<ion-content class="bg">
+  <div class="container center full-height">
+    
+    <div class="full-height flex-hv" *ngIf="pageLoaded && apps && apps?.length == 0">
+      <div class="grid-center" >
+        <ion-icon name="ios-heart" class="large-icon"></ion-icon>
+        <span class="size-18">You have no favorite apps.</span>
+      </div>
+    </div>
+    <div class="full-height flex-hv" *ngIf="!pageLoaded">
+      <div class="grid-center">
+        <div class="loader"></div>
+      </div>
+    </div>
+    
+    <masonry *ngIf="pageLoaded && apps && apps?.length != 0">
+      <masonry-brick class="brick" *ngFor="let app of (apps | sort:'dateFavorited':'desc');let i=index">
+        <app-card [app]="app" [rootNavCtrl]="rootNavCtrl"></app-card>
+      </masonry-brick>
+    </masonry>
+  </div>
+</ion-content>
